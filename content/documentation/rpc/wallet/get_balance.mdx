@@ -1,0 +1,43 @@
+---
+title: wallet/getBalance
+description: RPC Wallet | Iron Fish Documentation
+---
+
+Gets the wallet balance for the given account and asset. If the account is not specified,
+the default account will be used. If the asset is not specified, `$IRON` will be used.
+
+#### Request
+
+```ts
+{
+  account?: string
+  assetId?: string
+  confirmations?: number
+}
+```
+
+#### Response
+
+```ts
+{
+  account: string
+  assetId: string
+  confirmed: string
+  unconfirmed: string
+  unconfirmedCount: number
+  pending: string
+  pendingCount: number
+  available: string
+  confirmations: number
+  blockHash: string | null
+  sequence: number | null
+  /**
+   * @deprecated Please use getAsset endpoint to get this information
+   * */
+  assetVerification: {
+    status: 'verified' | 'unverified' | 'unknown'
+  }
+}
+```
+
+###### [View on Github](https://github.com/iron-fish/ironfish/blob/master/ironfish/src/rpc/routes/wallet/getBalance.ts)

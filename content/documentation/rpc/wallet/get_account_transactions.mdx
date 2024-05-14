@@ -1,0 +1,30 @@
+---
+title: wallet/getAccountTransactions
+description: RPC Wallet | Iron Fish Documentation
+---
+
+Gets transactions for the given account. If not specified, the default account is used.
+
+#### Request
+
+```ts
+{
+  account?: string
+  hash?: string
+  sequence?: number
+  limit?: number
+  offset?: number
+  confirmations?: number
+}
+```
+
+#### Response
+
+```ts
+RpcWalletTransaction
+```
+
+RPC Objects: 
+- [RpcWalletTransaction](/developers/documentation/rpc/objects/rpcWalletTransaction)
+
+###### [View on Github](https://github.com/iron-fish/ironfish/blob/master/ironfish/src/rpc/routes/wallet/getAccountTransactions.ts)

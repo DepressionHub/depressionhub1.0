@@ -1,0 +1,33 @@
+---
+title: node/stopNode
+description: RPC Node | Iron Fish Documentation
+---
+
+Shuts the node down
+
+> **Note:** When the response for this RPC ends, it does not mean the node is stopped. Shutting down the node terminates the RPC server, which terminates all pending requests including the `node/stopNode` request itself.
+
+#### Request Body
+
+```ts
+undefined
+```
+
+#### Response
+
+```ts
+undefined
+```
+
+### Example
+```bash
+# Request
+curl -X POST http://localhost:8021/node/stopNode
+
+# Response
+{
+  "status": 200
+}
+```
+
+###### [View on Github](https://github.com/iron-fish/ironfish/blob/master/ironfish/src/rpc/routes/node/stopNode.ts)

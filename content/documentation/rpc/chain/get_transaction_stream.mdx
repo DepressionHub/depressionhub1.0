@@ -1,0 +1,59 @@
+---
+title: chain/getTransactionStream
+description: RPC Chain | Iron Fish Documentation
+---
+
+Streams transactions from a head sequence given an incoming view key
+
+#### Request
+
+```ts
+{
+  incomingViewKey: string
+  head?: string | null
+}
+```
+
+#### Response
+
+```ts
+{
+  type: 'connected' | 'disconnected' | 'fork'
+  head: {
+    sequence: number
+  }
+  block: RpcBlockHeader
+  transactions: Transaction[]
+}
+```
+
+Sub Objects: 
+
+```ts
+interface Note {
+  assetId: string
+  /**
+   * @deprecated Please use getAsset endpoint to get this information
+   */
+  assetName: string
+  hash: string
+  value: string
+  memo: string
+}
+
+interface Transaction {
+  hash: string
+  isMinersFee: boolean
+  notes: Note[]
+  mints: RpcMint[]
+  burns: RpcBurn[]
+}
+```
+
+RPC Objects: 
+- [RpcBlockHeader](/developers/documentation/rpc/objects/rpcBlockHeader)
+- [RpcMint](/developers/documentation/rpc/objects/rpcBurn)
+- [RpcBurn](/developers/documentation/rpc/objects/rpcMint)
+
+
+###### [View on Github](https://github.com/iron-fish/ironfish/blob/master/ironfish/src/rpc/routes/chain/getTransactionStream.ts)

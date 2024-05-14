@@ -1,0 +1,41 @@
+---
+title: chain/followChainStream
+description: RPC Chain | Iron Fish Documentation
+---
+
+Follows the chain from a given sequence and streams blocks from chain connects
+and disconnects. If `wait` is set to false the stream will end when it reaches
+the head of the chain (true by default).
+
+#### Request
+
+```ts
+{
+  head?: string | null
+  serialized?: boolean
+  wait?: boolean
+} | undefined
+```
+
+#### Response
+
+```ts
+{
+  type: 'connected' | 'disconnected' | 'fork'
+  head: {
+    sequence: number
+  }
+  block: RpcBlock & {
+    /**
+     * @deprecated this can be derived from the type
+     */
+    main: boolean
+  }
+}
+```
+
+RPC Objects: 
+- [RpcBlock](/developers/documentation/rpc/objects/rpcBlock)
+
+
+###### [View on Github](https://github.com/iron-fish/ironfish/blob/master/ironfish/src/rpc/routes/chain/followChainStream.ts)

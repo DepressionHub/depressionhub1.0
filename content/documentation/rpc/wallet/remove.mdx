@@ -1,0 +1,30 @@
+---
+title: wallet/remove
+description: RPC Wallet | Iron Fish Documentation
+---
+
+<Warning>This API has been deprecated. Please use  [wallet/removeAccount](../wallet/removeAccount) instead.</Warning>
+
+Removes an account from the wallet.
+
+#### Request
+
+```ts
+{
+  account: string
+  confirm?: boolean
+  wait?: boolean
+}
+```
+
+> **Note:** This request will fail with an error if the account has a balance and `confirm: true` is not passed.
+
+#### Response
+
+```ts
+{
+  needsConfirm?: boolean
+}
+```
+
+###### [View on Github](https://github.com/iron-fish/ironfish/blob/master/ironfish/src/rpc/routes/wallet/removeAccount.ts)

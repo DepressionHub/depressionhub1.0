@@ -1,0 +1,102 @@
+---
+title: Transactions
+seo-title: Sending Transactions
+---
+
+## Check your balance
+
+You can check your balance at any time by running the following command:
+
+```sh
+ironfish wallet:balance
+```
+
+Your wallet must be synced with the blockchain or it will be wrong. You can ask for a balance explanation by running
+
+```sh
+ironfish wallet:balance --explain
+```
+
+## Send a transaction
+
+Send a transaction using your default account by running:
+```sh
+ironfish wallet:send
+```
+
+<Terminal
+  command="ironfish wallet:send"
+  output={`Enter the amount in $IRON (balance: $IRON 200) 20
+Enter the fee amount in $IRON 0.00000001
+Enter the public address of the recipient:
+ab518b8c908d7157eaebdf8159c5813894074d3136826daba4a485598de1b86a597af2821f8400bbfe70c1
+
+You are about to send:
+$IRON 20 to ab518b8c908d7157eaebdf8159c5813894074d3136826daba4a485598de1b86a597af2821f8400bbfe70c1 from the account ExampleAccount
+
+Do you confirm (Y/N)?: Y
+
+Creating the transaction:
+████████████████████████████████████████ 100%
+
+Sending 20 to ab518b8c908d7157eaebdf8159c5813894074d3136826daba4a485598de1b86a597af2821f8400bbfe70c1 from MyNewAccount
+
+Transaction Hash: e032e78268a1097288503e18510e48d140292ff5ce91d0914ae00f733ad8d166
+Transaction Fee: 0.00000001
+Find the transaction on https://explorer.ironfish.network/transaction/ee32e78268a1097288503e18510e48d140292ff5ce91d0914ae00f733ad8d166`}
+/>
+
+You can also send in non interactive mode by providing flags. Run `ironfish wallet:send --help` to see the different options available. [See more here](/use/get-started/cli-cmd-wallet-send).
+
+## Receive a transaction
+To receive a transaction, give the sender your public key by running the following command:
+
+```sh
+ironfish wallet:address
+```
+
+## View your transactions
+To view transactions from the default account
+
+```sh
+ironfish wallet:transactions
+```
+<Terminal
+  command="ironfish wallet:transactions"
+  output={`
+Timestamp               Status    Type    Hash     Expiration Fee Paid ($IRON) Asset         Net Amount
+─────────────────────── ───────── ─────── ──────── ────────── ──────────────── ───────────── ───────────
+3/9/2023 6:08:57 PM PST confirmed send    aa72c... 75076      0.00000001       $IRON (d7c86) -0.00000003
+3/9/2023 2:26:48 PM PST confirmed receive a4360... 74854                       $IRON (d7c86) 0.00000001
+`}
+/>
+
+## Track a transaction
+
+Once a transaction is sent, the sender should see a transaction hash displayed.
+
+```sh
+Transaction Hash: 4f484a5355a65be2179fc66d69e149788e78aec35c6db230b182264e3982bc15
+```
+
+You can use the [Iron Fish Block Explorer](https://explorer.ironfish.network/) to display information about this transaction. Of course, because Iron Fish is a fully private cryptocurrency, a limited amount of information is available to the public.
+
+For example, see the transaction above you can go here [https://explorer.ironfish.network/transaction/4f484a5355a65be2179fc66d69e149788e78aec35c6db230b182264e3982bc15](https://explorer.ironfish.network/transaction/4f484a5355a65be2179fc66d69e149788e78aec35c6db230b182264e3982bc15).
+
+### Watching the status of a transaction
+
+You can use the command line to watch a status of a transaction for an account in your wallet
+
+<Terminal
+  command="ironfish wallet:transactions:watch 4f484a5355a65be2179fc66d69e149788e78aec35c6db230b182264e3982bc15"
+  output={`
+ironfish wallet:transaction:watch 4f484a5355a65be2179fc66d69e149788e78aec35c6db230b182264e3982bc15
+Watching transaction 4f484a5355a65be2179fc66d69e149788e78aec35c6db230b182264e3982bc15
+Current Status... pending -> unconfirmed: 50s
+Current Status... unconfirmed -> confirmed: 1m 30s
+Current Status... done after 2m 20s`}
+/>
+
+## Next steps
+
+[Start mining $IRON](/use/get-started/mining).

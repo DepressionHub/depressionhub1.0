@@ -1,0 +1,26 @@
+---
+title: wallet/getAssets
+description: RPC Wallet | Iron Fish Documentation
+---
+
+Streams all the assets in the wallet of the given account. If not specified, the assets of default account will be returned.
+
+#### Request
+
+```ts
+{
+  account?: string
+  confirmations?: number
+}
+```
+
+#### Response
+
+```ts
+RpcAsset
+```
+
+RPC Objects: 
+- [RpcAsset](/developers/documentation/rpc/objects/rpcAsset)
+
+###### [View on Github](https://github.com/iron-fish/ironfish/blob/master/ironfish/src/rpc/routes/wallet/getAssets.ts)

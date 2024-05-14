@@ -1,0 +1,53 @@
+---
+title: event/onGossip
+description: RPC Event | Iron Fish Documentation
+---
+
+Streams block headers on gossip events
+
+#### Request Body
+
+```ts
+undefined
+```
+
+#### Response
+
+```ts
+{ 
+  blockHeader: RpcBlockHeader 
+}
+```
+
+### Example
+```bash
+# Request
+curl -X POST -N http://localhost:8021/event/onGossip
+
+# Response
+{
+  "data": {
+    "blockHeader": {
+        "hash": "000000041049480a103c646aa6cb10dcaddd666a2d270424f0b874a9739b2d14",
+        "previous": "0000000e669478e4da1f294d31e543a2427319b231591f9c2dc9f0bdf3c652f7",
+        "sequence": 1146,
+        "previousBlockHash": "0000000e669478e4da1f294d31e543a2427319b231591f9c2dc9f0bdf3c652f7",
+        "timestamp": 1695259437975,
+        "difficulty": "147664453",
+        "graffiti": "0000000000000000000000000000000000000000000000000000000000000000",
+        "noteCommitment": "16e9dc0bed8e5e47de6885b228833f1294ed321cdb964b595bc686072f01654e",
+        "transactionCommitment": "bb10e25c80844d9513603445b62c17aaa3f90e47c1122e442f1b2a472aa770fe",
+        "target": "784156829113884269923588075788882703227634511778136367318257590456879",
+        "randomness": "45656757",
+        "work": "0",
+        "noteSize": null
+    }
+  }
+}
+```
+
+RPC Objects: 
+- [RpcBlockHeader](/developers/documentation/rpc/objects/rpcBlockHeader)
+
+
+###### [View on Github](https://github.com/iron-fish/ironfish/blob/master/ironfish/src/rpc/routes/event/onGossip.ts)

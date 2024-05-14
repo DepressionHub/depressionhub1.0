@@ -1,0 +1,88 @@
+---
+title: config/getConfig
+description: RPC Config | Iron Fish Documentation
+---
+
+Gets a subset of configuration values for a node
+
+If the user flag is provided, a value will only be returned if the user set the configuration option.
+
+#### Request
+
+```ts
+{
+  user?: boolean
+  name?: string
+} | undefined
+```
+
+#### Response
+
+```ts
+Partial<
+  {
+    blockGraffiti: string
+    blocksPerMessage: number
+    bootstrapNodes: string[]
+    confirmations: number
+    customNetwork: string
+    databaseMigrate: boolean
+    editor: string
+    enableListenP2P: boolean
+    enableLogFile: boolean
+    enableMetrics: boolean
+    enableRpc: boolean
+    enableRpcIpc: boolean
+    enableRpcTcp: boolean
+    enableRpcTls: boolean
+    enableSyncing: boolean
+    enableTelemetry: boolean
+    feeEstimatorMaxBlockHistory: number
+    feeEstimatorPercentileAverage: number
+    feeEstimatorPercentileFast: number
+    feeEstimatorPercentileSlow: number
+    generateNewIdentity: boolean
+    getFundsApi: string
+    ipcPath: string
+    jsonLogs: boolean
+    keepOpenPeerSlot: boolean
+    logLevel: string
+    logPeerMessages: boolean
+    logPrefix: string
+    maxPeers: number
+    maxSyncedAgeBlocks: number
+    memPoolMaxSizeBytes: number
+    memPoolRecentlyEvictedCacheSize: number
+    minPeers: number
+    minerBatchSize: number
+    miningForce: boolean
+    nodeName: string
+    nodeWorkers: number
+    nodeWorkersMax: number
+    p2pSimulateLatency: number
+    peerPort: number
+    poolAccountName: string
+    poolBanning: boolean
+    poolDifficulty: string
+    poolDiscordWebhook: ''
+    poolHost: string
+    poolLarkWebhook: ''
+    poolMaxConnectionsPerIp: number
+    poolName: string
+    poolPayoutPeriodDuration: number
+    poolPort: number
+    poolRecentShareCutoff: number
+    poolStatusNotificationInterval: number
+    preemptiveBlockMining: boolean
+    rpcTcpHost: string
+    rpcTcpPort: number
+    targetPeers: number
+    telemetryApi: string
+    tlsCertPath: string
+    tlsKeyPath: string
+    transactionExpirationDelta: number
+  }
+>
+```
+
+###### [View on Github](https://github.com/iron-fish/ironfish/blob/master/ironfish/src/rpc/routes/config/getConfig.ts)

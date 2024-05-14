@@ -1,0 +1,29 @@
+---
+title: peer/getPeer
+description: RPC Peer | Iron Fish Documentation
+---
+
+Gets (and optionally streams) peer data from an identity
+
+#### Request
+
+```ts
+{
+  identity: string
+  stream?: boolean
+}
+```
+
+#### Response
+
+```ts
+{
+  peer: RpcPeerResponse | null
+}
+```
+
+RPC Objects: 
+- [RpcPeerResponse](/developers/documentation/rpc/objects/rpcPeerResponse)
+
+
+###### [View on Github](https://github.com/iron-fish/ironfish/blob/master/ironfish/src/rpc/routes/peer/getPeer.ts)

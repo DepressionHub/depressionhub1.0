@@ -1,0 +1,40 @@
+---
+title: RpcWalletNote
+description: RpcWalletNote | Iron Fish Documentation
+---
+```typescript
+export type RpcWalletNote = {
+  assetId: string
+  value: string
+  memo: string
+  memoHex: string
+  sender: string
+  owner: string
+  noteHash: string
+  transactionHash: string
+  spent: boolean
+  index: number | null
+  nullifier: string | null
+  /**
+   * @deprecated Please use `asset.name` instead
+   */
+  assetName: string
+  /**
+   * @deprecated Please use `owner` address instead
+   */
+  isOwner: boolean
+  /**
+   * @deprecated Please use `noteHash` instead
+   */
+  hash: string
+}
+```
+
+The `memo` field returns the note memo as a utf-8 string with any Unicode control characters removed. The `memoHex` field returns the note memo as a hex string.
+
+Usage: 
+- [wallet/getAccountNotesStream](/developers/documentation/rpc/wallet/get_account_notes_stream)
+- [wallet/getNotes](/developers/documentation/rpc/wallet/get_notes)
+- [wallet/getAccountTransaction](/developers/documentation/rpc/wallet/get_account_transaction)
+- [wallet/burnAsset](/developers/documentation/rpc/wallet/burn_asset)
+- [wallet/mintAsset](/developers/documentation/rpc/wallet/mint_asset)

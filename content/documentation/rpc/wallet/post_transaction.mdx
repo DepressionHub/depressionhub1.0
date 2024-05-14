@@ -1,0 +1,36 @@
+---
+title: wallet/postTransaction
+description: RPC Wallet | Iron Fish Documentation
+---
+
+Posts a transaction and submits it to the wallet, mempool, and network if possible.
+
+#### Request
+
+```ts
+{
+  account?: string
+  transaction: string
+  broadcast?: boolean
+}
+```
+
+#### Response
+
+```ts
+{
+  transaction: string;
+  hash: string;
+  broadcasted?: boolean
+  accepted?: boolean
+}
+```
+
+- **transaction** The hex encoded posted SDK transaction
+- **hash** The hex encoded posted transaction hash
+- **broadcasted** true if the transaction was successfully sent out to the network.
+  - *Note:* undefined if broadcast request parameter is false (default true)
+- **accepted** true if the transaction was accepted into the node's mempool
+  - *Note:* undefined if broadcast request parameter is false (default true)
+
+###### [View on Github](https://github.com/iron-fish/ironfish/blob/master/ironfish/src/rpc/routes/wallet/postTransaction.ts)

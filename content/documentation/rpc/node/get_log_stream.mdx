@@ -1,0 +1,44 @@
+---
+title: node/getLogStream
+description: RPC Node | Iron Fish Documentation
+---
+
+Streams logs from the node
+
+#### Request Body
+
+```ts
+undefined
+```
+
+#### Response
+
+```ts
+{
+  level: string
+  type: string
+  tag: string
+  args: string
+  date: string
+}
+```
+
+### Example
+
+```bash
+# Request
+curl -X POST -N http://localhost:8021/node/getLogStream
+
+# Response
+{
+  "data": {
+    "level": "4",
+    "type": "debug",
+    "tag": "start:ironfishsdk:ironfishnode:peernetwork:peermanager:webrtcconnection",
+    "args": "[\"\\u001b[32mCONN\\u001b[39m WebRtc 2uHo+// STATE WAITING_FOR_IDENTITY -> CONNECTED\"]",
+    "date": "2023-05-02T19:48:39.664Z"
+  }
+}
+```
+
+###### [View on Github](https://github.com/iron-fish/ironfish/blob/master/ironfish/src/rpc/routes/node/getLogStream.ts)

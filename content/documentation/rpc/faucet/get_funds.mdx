@@ -1,0 +1,29 @@
+---
+title: faucet/getFunds
+description: RPC Faucet | Iron Fish Documentation
+---
+
+> **Note:** This endpoint only works when using Testnet
+
+Submits a request to get funds from the faucet for an account.
+
+If an account is not provided, the default account on the node will be used.
+
+#### Request
+
+```ts
+{
+  account?: string
+  email?: string
+}
+```
+
+#### Response
+
+```ts
+{
+  id: string;
+}
+```
+
+## [View on Github](https://github.com/iron-fish/ironfish/blob/master/ironfish/src/rpc/routes/faucet/getFunds.ts)

@@ -1,0 +1,42 @@
+---
+title: chain/getTransaction
+description: RPC Chain | Iron Fish Documentation
+---
+
+Gets a transaction from a block hash and transaction hash
+
+#### Request
+
+```ts
+{
+  blockHash: string;
+  transactionHash: string;
+}
+```
+
+#### Response
+
+```ts
+RpcTransaction & {
+  noteSize: number
+  blockHash: string
+  /**
+   * @deprecated Please use `notes.length` instead
+   */
+  notesCount: number
+  /**
+   * @deprecated Please use `spends.length` instead
+   */
+  spendsCount: number
+  /**
+   * @deprecated Please use `notes` instead
+   */
+  notesEncrypted: string[]
+}
+```
+
+RPC Objects: 
+- [RpcTransaction](/developers/documentation/rpc/objects/rpcTransaction)
+
+
+## [View on Github](https://github.com/iron-fish/ironfish/blob/master/ironfish/src/rpc/routes/chain/getTransaction.ts)

@@ -1,0 +1,16 @@
+---
+title: reset
+seo: Reset Command
+---
+
+Deletes your chain database. Your wallet, accounts, and keys will NOT be deleted. However, deleting the chain database will also cause wallet balances to reset until the chain has been synced.
+
+```sh
+ironfish reset
+```
+
+The `reset` command may resolve errors like the one shown below:
+
+```
+Genesis block in network definition does not match existing chain genesis block
+```

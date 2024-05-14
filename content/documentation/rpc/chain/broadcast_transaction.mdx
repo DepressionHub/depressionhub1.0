@@ -1,0 +1,34 @@
+---
+title: chain/broadcastTransaction
+description: RPC Chain | Iron Fish Documentation
+---
+
+Broadcast a transaction to the node's peers.
+
+This is a one time broadcast. If the transaction fails to broadcast it will not be rebroadcast. This is in comparison to the wallet which rebroadcasts pending transactions at an interval.
+
+This will also add the transaction to the node's mempool.
+
+#### Request
+
+```ts
+{
+  transaction: string;
+}
+```
+
+#### Response
+
+```ts
+{
+  hash: string;
+  broadcasted: boolean;
+  accepted: boolean;
+}
+```
+
+- **hash** The transaction hash
+- **broadcasted** true if the transaction was successfully sent out to the network.
+- **accepted** true if the transaction was accepted into the node's mempool
+
+###### [View on Github](https://github.com/iron-fish/ironfish/blob/master/ironfish/src/rpc/routes/chain/broadcastTransaction.ts)

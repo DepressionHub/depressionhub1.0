@@ -1,0 +1,29 @@
+---
+title: wallet/addTransaction
+description: RPC Wallet | Iron Fish Documentation
+---
+
+Takes in a posted transaction, adds it to the wallet and mempool, and optionally broadcasts it to the network.
+
+Returns the names of the wallet accounts involved in the transaction.
+
+#### Request
+
+```ts
+{
+  transaction: string
+  broadcast?: boolean
+}
+```
+
+#### Response
+
+```ts
+{
+  accounts: string[]
+  hash: string
+  accepted: boolean
+}
+```
+
+###### [View on Github](https://github.com/iron-fish/ironfish/blob/master/ironfish/src/rpc/routes/wallet/addTransaction.ts)

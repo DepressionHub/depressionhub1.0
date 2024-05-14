@@ -1,0 +1,81 @@
+---
+title: chain/getConsensusParameters
+description: RPC Chain | Iron Fish Documentation
+---
+
+Gets consensus parameters from the chain
+
+#### Request
+
+```ts
+undefined;
+```
+
+#### Response
+
+```ts
+{
+  /**
+   * When adding a block, the block can be this amount of seconds into the future
+   * without rejecting it
+   */
+  allowedBlockFutureSeconds: number
+
+  /**
+   * The amount of coins in the genesis block
+   */
+  genesisSupplyInIron: number
+
+  /**
+   * The average time that all blocks should be mined
+   */
+  targetBlockTimeInSeconds: number
+
+  /**
+   * The time range when difficulty and target not change
+   */
+  targetBucketTimeInSeconds: number
+
+  /**
+   * Max block size
+   */
+  maxBlockSizeBytes: number
+
+  /**
+   * The minimum fee that a transaction must have to be accepted
+   */
+  minFee: number
+
+  /**
+   * The block height that enables the use of V2 transactions instead of V1
+   */
+  enableAssetOwnership: number | null
+
+  /**
+   * Before upgrade we have block timestamp smaller than previous block. After this
+   * block we enforce the block timestamps in the sequential order as the block sequences.
+   */
+  enforceSequentialBlockTime: number | null
+
+  /**
+   * Sequence at which to start mining and validating blocks with the FishHash algorithm
+   * instead Blake3. This sequence also modifies the block header serialization to move graffiti
+   * to the beginning of the block header before mining.
+   */
+  enableFishHash: number | null
+
+  /**
+   * Sequence at which to use an increased max bucket in the target calculation,
+   * allowing for a greater per-block downward shift.
+   */
+  enableIncreasedDifficultyChange: number | null
+
+  /**
+   * Mapping of block height to the hash of the block at that height. Once a node has added this block to
+   * its main chain, it will not be disconnected from the main chain.
+   */
+  checkpoints: { sequence: number; hash: string }[]
+}
+```
+
+## [View on Github](https://github.com/iron-fish/ironfish/blob/master/ironfish/src/rpc/routes/chain/getConsensusParameters.ts)

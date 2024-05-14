@@ -1,0 +1,25 @@
+---
+title: wallet:notes
+seo: Wallet Notes Command
+---
+
+Gets the default account's notes
+
+```sh
+ironfish wallet:notes
+```
+
+Gets a specific account's notes
+
+```sh
+ironfish wallet:notes -a MyNewAccount
+```
+
+<Terminal command="ironfish wallet:notes"
+  output={` Memo                             Sender Note Hash From Transaction Spent Asset ID                         Asset Name                       Amount          Nullifier
+ ──────────────────────────────── ────── ───────── ──────────────── ───── ──────────────────────────────── ──────────────────────────────── ─────────────── ─────────
+ test                             6f828… 97efa300… 67b3647833ea898…       51f33a2f14f92735e562dc658a56392… $IRON                            0.00000001      f76b060f…
+                                  6f828… d04bf7a7… 67b3647833ea898…       51f33a2f14f92735e562dc658a56392… $IRON                            0.00000003      c04e3a14…
+ Faucet for 441446                f8dff… 4360d56b… fad2b29b28610f4… ✔     51f33a2f14f92735e562dc658a56392… $IRON                            0.00000005      565d24b3…
+`}
+/>

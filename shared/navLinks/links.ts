@@ -135,6 +135,6 @@ export const links = [
   },
   {
     label: messages.blogTitle,
-    href: "/learn/blog",
+    href: "/",
   },
 ] as const;

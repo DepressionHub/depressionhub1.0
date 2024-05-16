@@ -21,6 +21,9 @@ import { FancyArrowRight } from "../../../icons";
 import { NAV_HEIGHT } from "../NavBar";
 import { useCallback, useEffect } from "react";
 import { useRouter } from "next/router";
+import { ConnectButton } from "thirdweb/react";
+import { client } from "@/components/wallet/client";
+import { chain } from "lodash-es";
 
 export function MobileVariant({ content }: { content: NavItems }) {
   const [isOpen, setLocked] = useLockedBody(false);
@@ -160,14 +163,20 @@ export function MobileVariant({ content }: { content: NavItems }) {
                     <Text textStyle="h5">{item.label}</Text>
                     <RxChevronRight size="30" />
                   </HStack>
+                  
                 </ShadowBox>
               );
             })}
             <Box py={6}>
-              <Button size="lg" as={Link} href="/use/get-started">
-                <Box mr={4}>Get Started</Box>
-                <FancyArrowRight />
-              </Button>
+              <VStack spacing={4} align="stretch">
+                <Button size="lg" as={Link} href="/use/get-started">
+                  <Box mr={4}>Get Started</Box>
+                  <FancyArrowRight />
+                </Button>
+                <Box display="flex" justifyContent="center">
+                  <ConnectButton client={client} />
+                </Box>
+              </VStack>
             </Box>
           </VStack>
         </Box>

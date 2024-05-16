@@ -1,9 +1,10 @@
+// pages/_app.tsx
 import { AppProps } from "next/app";
 import Head from "next/head";
 import { IronfishUIProvider, LoadFonts, MDXRenderer } from "@/lib/ui";
 import { IntlProvider } from "../intl/IntlProvider";
 import { GoogleAnalytics } from "nextjs-google-analytics";
-import { ThirdwebProvider } from "@/components/wallet/thirdweb";
+
 import hljs from "highlight.js/lib/core";
 import "highlight.js/styles/atom-one-dark.css";
 import javascript from "highlight.js/lib/languages/javascript";
@@ -13,6 +14,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { MainLayout } from "../layouts/Main/Main";
 
 import "../styles/global.css";
+import { ThirdwebProvider } from "@/components/wallet/thirdweb";
 
 hljs.registerLanguage("javascript", javascript);
 hljs.registerLanguage("rust", rust);
@@ -32,14 +34,14 @@ function App({ Component, pageProps }: AppProps) {
       <MDXRenderer.Provider>
         <IntlProvider>
           <QueryClientProvider client={queryClient}>
-            <IronfishUIProvider>
-              <LoadFonts />
-              <MainLayout>
-                 <ThirdwebProvider >
-                <Component {...pageProps} />
-                </ThirdwebProvider>
-              </MainLayout>
-            </IronfishUIProvider>
+            <ThirdwebProvider>
+              <IronfishUIProvider>
+                <LoadFonts />
+                <MainLayout>
+                  <Component {...pageProps} />
+                </MainLayout>
+              </IronfishUIProvider>
+            </ThirdwebProvider>
           </QueryClientProvider>
         </IntlProvider>
       </MDXRenderer.Provider>

@@ -17,12 +17,6 @@ export const links = [
         href: "/learn/whitepaper",
         image: "/images/nav/learn-whitepaper.svg",
       },
-      {
-        title: messages.tokenomicsTitle,
-        description: messages.tokenomicsDescription,
-        href: "/learn/tokenomics",
-        image: "/images/nav/learn-tokenomics.svg",
-      },
     ],
   },
   {
@@ -60,18 +54,6 @@ export const links = [
         image: "/images/nav/community-foundation.svg",
       },
       {
-        title: messages.governanceTitle,
-        description: messages.governanceDescription,
-        href: "/community/governance",
-        image: "/images/nav/community-governance.svg",
-      },
-      {
-        title: messages.grantsTitle,
-        description: messages.grantsDescription,
-        href: "/community/grants",
-        image: "/images/nav/community-grants.svg",
-      },
-      {
         title: messages.communityTitle,
         description: messages.communityDescription,
         href: "/community/our-community",
@@ -88,12 +70,6 @@ export const links = [
         description: messages.aboutUsDescription,
         href: "/company/about-us",
         image: "/images/nav/company-submarine.svg",
-      },
-      {
-        title: messages.mediaKitTitle,
-        description: messages.mediaKitDescription,
-        href: "/company/media-kit",
-        image: "/images/nav/company-vertical-fish.svg",
       },
       {
         title: messages.contactUsTitle,

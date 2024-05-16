@@ -35,7 +35,7 @@ export const messages = defineMessages({
   },
   nodeAppTitle: {
     id: "nav.nodeAppTitle",
-    defaultMessage: "Node App",
+    defaultMessage: "Our App",
   },
   nodeAppDescription: {
     id: "nav.nodeAppDescription",

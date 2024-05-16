@@ -13,7 +13,7 @@ import { NewsletterSignUp } from "../NewsletterSignUp/NewsletterSignUp";
 import { useNavLinks } from "../../shared/navLinks/useNavLinks";
 import { Circle } from "./assets/Circle";
 import { Logo } from "./assets/Logo";
-import { BsTwitter, BsDiscord, BsGithub, BsTelegram } from "react-icons/bs";
+import { BsTwitter, BsLinkedin, BsGithub, BsInstagram } from "react-icons/bs";
 import { defineMessages, useIntl } from "react-intl";
 import { CONSTANTS } from "../../shared/constants";
 import { CategoryNavItem } from "@/lib/ui";
@@ -226,11 +226,11 @@ export function Footer() {
             <BsTwitter size={30} />
           </Link>
           <Link
-            href={CONSTANTS.SOCIAL_LINKS.discord}
+            href={CONSTANTS.SOCIAL_LINKS.linkedin}
             target="_blank"
             rel="noreferrer"
           >
-            <BsDiscord size={30} />
+            <BsLinkedin size={30} />
           </Link>
           <Link
             href={CONSTANTS.SOCIAL_LINKS.github}
@@ -240,11 +240,11 @@ export function Footer() {
             <BsGithub size={30} />
           </Link>
           <Link
-            href={CONSTANTS.SOCIAL_LINKS.telegram}
+            href={CONSTANTS.SOCIAL_LINKS.instagram}
             target="_blank"
             rel="noreferrer"
           >
-            <BsTelegram size={30} />
+            <BsInstagram size={30} />
           </Link>
         </HStack>
       </Flex>

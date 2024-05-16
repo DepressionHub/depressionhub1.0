@@ -1,8 +1,8 @@
 const SOCIAL_LINKS = {
   twitter: "",
-  discord: "",
+  linkedin: "https://www.linkedin.com/in/depression-hub/",
   github: "",
-  telegram: "",
+  instagram: "https://www.instagram.com/depressionhub.in/",
 };
 
 export const CONSTANTS = {

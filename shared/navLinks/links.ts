@@ -42,18 +42,6 @@ export const links = [
         image: "/images/nav/use-key-fish.svg",
       },
       {
-        title: messages.mineIronTitle,
-        description: messages.mineIronDescription,
-        href: "/use/get-started/mining",
-        image: "/images/nav/use-strangely-normal-looking-fish.svg",
-      },
-      {
-        title: messages.blockExplorerTitle,
-        description: messages.blockExplorerDescription,
-        href: "https://explorer.ironfish.network/",
-        image: "/images/nav/use-block.svg",
-      },
-      {
         title: messages.ecosystemTitle,
         description: messages.ecosystemDescription,
         href: "/use/ecosystem",
@@ -117,6 +105,6 @@ export const links = [
   },
   {
     label: messages.blogTitle,
-    href: "/",
+    href: "/learn/blog",
   },
 ] as const;

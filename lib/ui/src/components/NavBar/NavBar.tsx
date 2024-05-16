@@ -47,9 +47,9 @@ export function NavBar({ content, sticky }: Props) {
       <HStack alignItems="center">
         <Link href="/">
           <Image
-            width={204}
-            height={22}
-            src="/images/logo.svg"
+            width={300}
+            height={40}
+            src="/images/logo.png"
             alt="Iron Fish"
           />
         </Link>

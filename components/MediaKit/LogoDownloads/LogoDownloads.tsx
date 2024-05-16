@@ -9,7 +9,7 @@ import {
   Stack,
   Text,
 } from "@/lib/ui";
-import FullLogo from "./assets/full-logo.svg";
+import FullLogo from "./assets/full-logo.png";
 import HexFish from "./assets/hex-fish.svg";
 
 export function LogoDownloads() {

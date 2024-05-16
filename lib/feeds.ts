@@ -52,7 +52,7 @@ export default async function generateBlogFeeds() {
     id: siteUrl,
     link: siteUrl,
     updated: lastUpdate,
-    image: `${siteUrl}/images/logo.svg`,
+    image: `${siteUrl}/images/logo.png`,
     favicon: `${siteUrl}/favicon.ico`,
     copyright: `Copyright ${new Date().getFullYear()} Iron Fish`,
     generator: "",

@@ -1,0 +1,51 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  name      String
+  lastname  String
+  email     String   @unique
+  password  String
+  createdat DateTime @default(now())
+  updatedat DateTime @updatedAt
+  therapist Therapist?
+  sessions  Session[]
+}
+
+model Therapist {
+  id            Int      @id @default(autoincrement())
+  userId        Int      @unique
+  bio           String?
+  specialties   String[]
+  ratePerSession Float
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  user          User     @relation(fields: [userId], references: [id])
+  sessions      Session[]
+}
+
+model Session {
+  id             Int      @id @default(autoincrement())
+  userId         Int
+  therapistId    Int
+  dateTime       DateTime
+  status         SessionStatus @default(PENDING)
+  transactionId  String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  user           User         @relation(fields: [userId], references: [id])
+  therapist      Therapist    @relation(fields: [therapistId], references: [id])
+}
+
+enum SessionStatus {
+  PENDING
+  COMPLETED
+  CANCELLED
+}

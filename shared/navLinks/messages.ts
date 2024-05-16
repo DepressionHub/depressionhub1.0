@@ -9,10 +9,6 @@ export const messages = defineMessages({
     id: "nav.use",
     defaultMessage: "Use",
   },
-  developers: {
-    id: "nav.developers",
-    defaultMessage: "Developers",
-  },
   community: {
     id: "nav.community",
     defaultMessage: "Community",

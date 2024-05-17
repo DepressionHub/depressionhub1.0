@@ -1,4 +1,3 @@
-
 import { Category } from "./Category";
 import { IoChevronDownSharp } from "react-icons/io5";
 import { kebabCase } from "lodash-es";
@@ -10,6 +9,7 @@ import { useRouter } from "next/router";
 import { ConnectButton, ConnectEmbed } from "thirdweb/react";
 import { chain } from "@/components/wallet/chain";
 import { client } from "@/components/wallet/client";
+import Component from "@/components/login/login-btn";
 
 function useHandleLinkClick() {
   const [forceClose, setForceClose] = useState(false);
@@ -114,14 +114,10 @@ export function DesktopVariant({ content }: { content: NavItems }) {
             </Flex>
           );
         })}
-      </HStack> 
+      </HStack>
       <HStack alignItems="center">
-         <ConnectButton
-                            client={client}
-                            chain={chain}
-                         
-                        />
-                        
+        <ConnectButton client={client} chain={chain} />
+        <Component />
         <Button size="lg" as={Link} href="/use/get-started">
           <Box mr={4}>Get Started</Box>
           <FancyArrowRight />

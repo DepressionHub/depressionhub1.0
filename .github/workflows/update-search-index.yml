@@ -23,9 +23,6 @@ jobs:
     - name: Install Dependencies
       run: yarn install
 
-    - name: Generate Search Index
-      run: yarn gen-search-index
-
     - name: Set up Git Config
       run: |
         git config --global user.name 'github-actions[bot]'

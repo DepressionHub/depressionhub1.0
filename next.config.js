@@ -29,7 +29,6 @@ const nextConfig = {
 script-src 'self' 'unsafe-eval' 'unsafe-inline' https://www.googletagmanager.com https://vercel.live https://network.us20.list-manage.com;
 object-src 'none';
 base-uri 'self';
-form-action 'self';
 frame-ancestors 'none';
 upgrade-insecure-requests;
             `.replace(/\n/g, ""),

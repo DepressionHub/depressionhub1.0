@@ -9,10 +9,11 @@ import {
   chakra,
 } from "@/lib/ui";
 import Link from "next/link";
+import Image from "next/image";
 import { NewsletterSignUp } from "../NewsletterSignUp/NewsletterSignUp";
 import { useNavLinks } from "../../shared/navLinks/useNavLinks";
-import { Circle } from "./assets/Circle";
-import { Logo } from "./assets/Logo";
+import Circle from "./assets/circle.png";
+import Logo from "./assets/logowhite.png";
 import { BsTwitter, BsLinkedin, BsGithub, BsInstagram } from "react-icons/bs";
 import { defineMessages, useIntl } from "react-intl";
 import { CONSTANTS } from "../../shared/constants";
@@ -22,7 +23,7 @@ const messages = defineMessages({
   newsletter: {
     id: "footer.newsletter",
     defaultMessage:
-      "Join our newsletter and stay up to date with privacy and crypto.",
+      "Join our newsletter and stay up to date with depressionhub new  features.",
   },
   blogLink: {
     id: "footer.blogPrefix",
@@ -61,8 +62,9 @@ export function Footer() {
         md: 16,
       }}
     >
-      <Box mb={24}>
-        <Logo />
+    
+      <Box  mb={15}>
+     <Image src={Logo} className=" mb-15" alt="depressionhub" width={400} height={100} />
       </Box>
       <Text
         fontSize={{
@@ -169,7 +171,7 @@ export function Footer() {
             lg: 0,
           }}
         >
-          <Circle />
+           <Image src={Circle} className=" mb-15" alt="depressionhub" width={40} height={10} />
           <Flex
             ml={4}
             alignItems={{

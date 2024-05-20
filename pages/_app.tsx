@@ -26,7 +26,7 @@ function App({ Component, pageProps: { session, ...pageProps } }: AppProps) {
     <>
       <Head>
         <title>
-          Iron Fish | Private, anonymous, and easy to use cryptocurrency
+          Depressionhub | Private, anonymous, and easy way to fix ur life
         </title>
         <link href="./output.css" rel="stylesheet" />
         <link rel="shortcut icon" href="/favicon.ico" />

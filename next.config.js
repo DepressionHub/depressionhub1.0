@@ -1,5 +1,14 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  images: {
+    domains: [
+      'www.daisakuikeda.org',
+      'play-lh.googleusercontent.com',
+      'humanists.international',
+      'www.mentalwellnesscentre.com',
+      'yt3.googleusercontent.com',
+    ],
+  },
   reactStrictMode: true,
   i18n: {
     locales: ["en"],
@@ -56,7 +65,7 @@ upgrade-insecure-requests;
       },
       {
         source: "/use/get-started",
-        destination: "/use/get-started/get-started",
+        destination: "/Chatnow",
         permanent: false,
       },
       {
@@ -174,4 +183,6 @@ upgrade-insecure-requests;
   },
 };
 
+
 module.exports = nextConfig;
+

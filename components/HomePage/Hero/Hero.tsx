@@ -1,4 +1,3 @@
-
 import {
   Heading,
   Grid,
@@ -52,14 +51,18 @@ export function Hero() {
             }}
           >
             <Heading as="h1" size="h1" mb={4}>
-             Connecting Minds, Healing souls.
+              Connecting Minds, Healing souls.
             </Heading>
             <Text textStyle="lg" mb={10}>
-        Find people who are in the same emotional state as you, connect with them, and help each other navigate life's ups and downs. <br />
-      <span className="bg-gradient-to-r from-pink-500 to-white text-transparent bg-clip-text">• Low Price Therapy | Community | Clubs I Anonymous chat</span>
+              Find people who are in the same emotional state as you, connect
+              with them, and help each other navigate life's ups and downs.{" "}
+              <br />
+              <span className="bg-gradient-to-r from-pink-500 to-white text-transparent bg-clip-text">
+                • Low Price Therapy | Community | Clubs I Anonymous chat
+              </span>
             </Text>
             <Button size="lg" as={Link} href="/use/get-started">
-              <Box mr={4}>Get Started</Box>
+              <Box mr={4}>Chat Now</Box>
               <FancyArrowRight />
             </Button>
           </Box>

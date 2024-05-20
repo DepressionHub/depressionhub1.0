@@ -28,6 +28,7 @@ function App({ Component, pageProps: { session, ...pageProps } }: AppProps) {
         <title>
           Iron Fish | Private, anonymous, and easy to use cryptocurrency
         </title>
+        <link href="./output.css" rel="stylesheet" />
         <link rel="shortcut icon" href="/favicon.ico" />
       </Head>
       <SessionProvider session={session}>

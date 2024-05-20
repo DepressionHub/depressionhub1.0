@@ -48,7 +48,7 @@ export function NavBar({ content, sticky }: Props) {
         <Link href="/">
           <Image
             width={400}
-            height={100}
+            height={50}
             src="/images/logo.png"
             alt="Iron Fish"
           />

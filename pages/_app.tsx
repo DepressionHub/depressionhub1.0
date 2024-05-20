@@ -28,6 +28,7 @@ function App({ Component, pageProps: { session, ...pageProps } }: AppProps) {
         <title>
           Depressionhub | Private, anonymous, and easy way to fix ur life
         </title>
+        <link href="./output.css" rel="stylesheet" />
         <link rel="shortcut icon" href="/favicon.ico" />
       </Head>
       <SessionProvider session={session}>

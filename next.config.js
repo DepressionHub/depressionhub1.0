@@ -1,5 +1,14 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  images: {
+    domains: [
+      'www.daisakuikeda.org',
+      'play-lh.googleusercontent.com',
+      'humanists.international',
+      'www.mentalwellnesscentre.com',
+      'yt3.googleusercontent.com',
+    ],
+  },
   reactStrictMode: true,
   i18n: {
     locales: ["en"],
@@ -29,7 +38,6 @@ const nextConfig = {
 script-src 'self' 'unsafe-eval' 'unsafe-inline' https://www.googletagmanager.com https://vercel.live https://network.us20.list-manage.com;
 object-src 'none';
 base-uri 'self';
-form-action 'self';
 frame-ancestors 'none';
 upgrade-insecure-requests;
             `.replace(/\n/g, ""),
@@ -57,7 +65,7 @@ upgrade-insecure-requests;
       },
       {
         source: "/use/get-started",
-        destination: "/use/get-started/get-started",
+        destination: "/Chatnow",
         permanent: false,
       },
       {
@@ -175,4 +183,6 @@ upgrade-insecure-requests;
   },
 };
 
+
 module.exports = nextConfig;
+

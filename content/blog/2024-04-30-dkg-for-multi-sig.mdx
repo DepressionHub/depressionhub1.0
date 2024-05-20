@@ -1,51 +1,26 @@
 ---
 author: iflabs
-title: "Announcing Distributed Key Generation for multisig"
+title: "The Meditative Power of Restful Sleep"
 description: "Iron Fish multisignature wallets now supports Distrubuted Key Generation (DKG) in addition to Trusted Dealer Key Generation (TDK)."
 image: /images/blog/multisig.png
-tags: [ironfish, iron fish, multi-sig, multi sig, multi-sig wallets]
+tags: [sleep ,power , meditation]
 ---
+We often think of meditation as something we do while awake - a practice of mindfulness, breath work, and present awareness. However, high quality sleep is also an essential component of a balanced meditation practice. Sleep allows our minds to recharge, processing emotions and experiences from the day. When we are well-rested, we bring a sense of clarity and calm focus to our meditation sessions.
+The Importance of Sleep for Mental Health
+Lack of sleep takes a toll on mental health. Insufficient sleep is linked to increased anxiety, irritability, and negativity. Running on little sleep, our minds tend to feel foggy and scattered. Conversely, getting adequate restful sleep helps regulate mood, allowing us to approach life's challenges with more equanimity. Well-rested meditators can more easily let go of distracting thoughts and bring their attention fully into the present moment.
+Sleep and Nervous System Balance
+During sleep, our bodies engage in repair and balance at a molecular level. Sleep is particularly restorative for our nervous systems. Healthy sleep helps modulate our stress response, allowing our bodies to stay relaxed and prevent the build-up of stress hormones like cortisol. This relaxed physiological state provides an ideal biochemical foundation for the quietness and inward focus of meditation.
 
-Earlier this month we announced support for multisignature transactions, or multisig, which allow you to spread the key required to approve a transaction among multiple participants. Need a refresher on what multisignature transactions are? Check out the previous [blog post](/learn/blog/2024-04-09-multi-sig)!
+ # Tips for Healthy, Meditative Sleep
+To get the most from your sleep for more productive meditation sessions:
 
-Today we’re happy to announce that we extended our multisignature implementation to support a new method to generate keys: distributed key generation, or DKG.
+- Maintain a consistent sleep schedule
+- Create a cool, dark, comfortable sleep environment
+- Avoid screen time and stimulants like caffeine before bed
+- Try calming evening routines like light yoga or breathing exercises
+- If your mind is racing, write thoughts in a journal before bed
 
-# Different methods for generating keys
+By prioritizing high quality sleep, you allow yourself to bring your best, most present self to your meditation practice. Let restful sleep be your pathway to a quieter, more focused mind.
 
-When we initially launched support for multisig, we supported only one key generation method: Trusted Dealer Key Generation (TDK). With this method, a trusted entity, called “dealer”, generates a cryptographic key, then splits this key and distributes the parts among the participants.
 
-The advantage of TDK is that it’s relatively simple to use. The downside is that all participants need to trust the dealer not to keep any copy of the initial cryptographic key or its parts. If the dealer has malicious intentions (or if their machine is compromised by malicious actors), then they could become able to fully authorize transactions autonomously, without the cooperation of other participants.
 
-<figure>
-<figcaption>Trusted Dealer Key Generation</figcaption>
-<img src="/images/blog/multisig-tdk.svg" alt="Trusted Dealer Key Generation" style={{margin: '2em auto', maxHeight: '22em'}}/>
-</figure>
-
-Distributed Key Generation (DKG) is an alternative to Trusted Dealer Key Generation (TDK). It is a method that involves only the participants, and does not require any trusted entity. Through DKG, participants work cooperatively to generate a set of keys, and none of them ever gets access to enough information to gain an advantage over other participants.
-
-DKG can therefore be considered safer than TDK under many aspects. The price to pay with DKG is that it is a more complicated process that involves more steps.
-
-<figure>
-<figcaption>Distributed Key Generation</figcaption>
-<img src="/images/blog/multisig-dkg.svg" alt="Distributed Key Generation (DKG)" style={{margin: '2em auto', maxHeight: '22em'}}/>
-</figure>
-
-# How do I choose between DKG and TDK?
-
-There are many possible use cases for both of the methods, so there is not a definitive answer, but here are some general suggestions.
-
-Use TDK if:
-
-- you want to use the **simplest** method to generate multisignature accounts
-- you have an entity or a machine that you can fully trust with your keys, who will never leak or copy them
-
-Use DKG if:
-
-- you want to use the **most secure** method to generate multisignature accounts
-- you don’t mind the extra steps required
-
-# Get Started
-
-Support for Distributed Key Generation (DKG) was released in the node and SDK version 2.3.0.
-
-To get you started, we have published both an [SDK recipe](https://ironfish.network/developers/documentation/recipes_multisig_create_account_dkg) and a [CLI recipe](https://ironfish.network/use/get-started/multisig-creation-dkg). Check them out for a step-by-step guide on how to generate keys with DKG!

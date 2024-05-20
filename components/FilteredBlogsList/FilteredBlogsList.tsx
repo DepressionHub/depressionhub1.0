@@ -18,20 +18,20 @@ const filterOptionsMap = {
     value: "all",
   },
   media: {
-    label: "Media",
-    value: "media",
+    label: "Self-Improvement",
+    value: "Self-Improvement",
   },
   "community-highlight": {
-    label: "Community Spotlights",
-    value: "community-highlight",
+    label: "Creativity",
+    value: "Creativity",
   },
   "ecosystem-spotlight": {
-    label: "Ecosystem Spotlights",
-    value: "ecosystem-spotlight",
+    label: "Growth",
+    value: "Growth",
   },
   "product-highlight": {
-    label: "Product Highlights",
-    value: "product-highlight",
+    label: "Money",
+    value: "Money",
   },
 };
 

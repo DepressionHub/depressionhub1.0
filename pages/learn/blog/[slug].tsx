@@ -21,9 +21,9 @@ const FOOTER = `
 
 #### Join the Iron Fish community 🏃🐟
 
-* 🎤 [Discord](https://discord.ironfish.network/)
-* 🐦 [Twitter](https://twitter.com/ironfishcrypto)
-* 📧 [Email Updates](mailto:contact@ironfish.network)
+* 🎤 [Discord](https://discord.gg/pqWbPVKh)
+* 🐦 [Twitter](https://twitter.com/DepressionHUB_)
+* 📧 [Email Updates](mailto:depressionhubbusiness@gmail.com)
 `;
 
 export default function BlogPage({

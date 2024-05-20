@@ -38,7 +38,7 @@ export function BlogLayout({
   seoTitlePostfix = "",
 }: Props) {
   const fullTitle = seoTitlePrefix + (seoTitle || title) + seoTitlePostfix;
-  const imageUrl = image && new URL(image, process.env.NEXT_PUBLIC_ORIGIN);
+
   return (
     <>
       <Head>
@@ -47,11 +47,6 @@ export function BlogLayout({
           <>
             <meta name="description" content={description} />
             <meta name="og:description" content={description} />
-          </>
-        )}
-        {imageUrl && (
-          <>
-            <meta name="og:image" content={imageUrl.href} />
           </>
         )}
       </Head>

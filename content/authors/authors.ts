@@ -53,10 +53,10 @@ export const authors: Record<string, Author> = {
       "Craig is the General Counsel of Iron Fish, previously at Bank of America and Department of Justice.",
   },
   iflabs: {
-    name: "IF Labs",
+    name: "tanmay",
     title: "Building a Safe, Encrypted Tomorrow",
-    url: "https://twitter.com/IFLabsCrypto",
+    url: "https://twitter.com/tanmayy4l",
     image_url: "/images/blog/iflabs.jpeg",
-    description: `IF Labs is an encryption-focused team that uses the Iron Fish protocol to build a world where users control their data.`,
+    description: ``,
   },
 } as const;

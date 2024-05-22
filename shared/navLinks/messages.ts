@@ -19,7 +19,7 @@ export const messages = defineMessages({
   },
   faqTitle: {
     id: "nav.faqTitle",
-    defaultMessage: "FAQ",
+    defaultMessage: "Therapist (Apply Now)",
   },
   faqDescription: {
     id: "nav.faqDescription",

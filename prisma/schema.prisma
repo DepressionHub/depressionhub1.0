@@ -8,82 +8,83 @@ generator client {
 }
 
 model User {
-  id                Int                 @id @default(autoincrement())
-  name               String?
-  email              String              @unique
-  emailVerified      DateTime?
-  image              String?
-  walletAddress      String
-  role               Role                @default(USER)
-  createdAt          DateTime            @default(now())
-  updatedAt          DateTime            @updatedAt
-  sessions           TherapySession[]    @relation("UserSessions")
-  accounts           Account[]
-  verificationTokens VerificationToken[] @relation("UserVerificationTokens")
-  therapist          Therapist?
-  userSessions       Session[]           @relation("UserSessions")
+  id             String           @id @default(cuid())
+  name           String?
+  email          String           @unique
+  emailVerified  DateTime?
+  image          String?
+  accounts       Account[]
+  sessions       Session[]
+  role           Role             @default(USER)
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
+  therapist      Therapist[]
+  TherapySession TherapySession[]
 }
 
 model Therapist {
-  id            Int              @id @default(autoincrement())
-  userId        Int              @unique
-  user          User             @relation(fields: [userId], references: [id])
-  bio           String?
-  specialties   String[]
+  id             Int              @id @default(autoincrement())
+  userId         String           @unique
+  user           User             @relation(fields: [userId], references: [id])
+  bio            String?
+  specialties    String[]
   ratePerSession Float
-  createdAt     DateTime         @default(now())
-  updatedAt     DateTime         @updatedAt
-  sessions      TherapySession[] @relation("TherapistSessions")
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
+  sessions       TherapySession[]
 }
 
 model TherapySession {
-  id           Int           @id @default(autoincrement())
-  userId       Int
-  therapistId  Int
-  dateTime     DateTime
-  amount       Float
-  status       SessionStatus @default(PENDING)
+  id            Int           @id @default(autoincrement())
+  userId        String
+  therapistId   Int
+  dateTime      DateTime
+  amount        Float
+  status        SessionStatus @default(PENDING)
   transactionId String?
-  createdAt    DateTime      @default(now())
-  updatedAt    DateTime      @updatedAt
-  user         User          @relation("UserSessions", fields: [userId], references: [id])
-  therapist    Therapist     @relation("TherapistSessions", fields: [therapistId], references: [id])
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+  user          User          @relation(fields: [userId], references: [id])
+  therapist     Therapist     @relation(fields: [therapistId], references: [id])
 }
 
 model Account {
-  id               Int     @id @default(autoincrement())
-  userId           Int
-  type             String
-  provider         String
+  userId            String
+  type              String
+  provider          String
   providerAccountId String
-  refresh_token    String? @db.Text
-  access_token     String? @db.Text
-  expires_at       Int?
-  token_type       String?
-  scope            String?
-  id_token         String? @db.Text
-  session_state    String?
-  user             User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
 
-  @@unique([provider, providerAccountId])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([provider, providerAccountId])
 }
 
 model Session {
-  id           Int      @id @default(autoincrement())
   sessionToken String   @unique
-  userId       Int
+  userId       String
   expires      DateTime
-  user         User     @relation("UserSessions", fields: [userId], references: [id], onDelete: Cascade)
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model VerificationToken {
   identifier String
-  token      String  @unique
+  token      String
   expires    DateTime
-  userId     Int
-  user       User    @relation("UserVerificationTokens", fields: [userId], references: [id])
 
-  @@unique([identifier, token])
+  @@id([identifier, token])
 }
 
 enum Role {

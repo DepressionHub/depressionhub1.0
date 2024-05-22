@@ -2,6 +2,8 @@
 const nextConfig = {
   images: {
     domains: [
+       'img.icons8.com',
+       'www.w3.org',
       'www.daisakuikeda.org',
       'play-lh.googleusercontent.com',
       'humanists.international',

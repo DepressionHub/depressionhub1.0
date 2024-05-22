@@ -1,8 +1,9 @@
-import React from "react";
+import React, { useState } from "react";
 import circleLogo from "../components/Footer/assets/circle.png";
 import Image from "next/image";
 
 const SigninPage: React.FC = () => {
+  const [showPassword, setShowPassword] = useState(false);
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-600 to-white-500 text-white">
       <div className="p-8 rounded-lg shadow-2xl w-full max-w-md transform hover:scale-105 transition-transform duration-300 ease-in-out bg-opacity-80 bg-gray-900">
@@ -34,11 +35,18 @@ const SigninPage: React.FC = () => {
               Password
             </label>
             <input
-              type="password"
+              type={showPassword ? "text" : "password"}
               id="password"
               className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg focus:outline-none focus:border-blue-500"
               required
             />
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              className="text-xs text-blue-400 hover:text-blue-600"
+            >
+              {showPassword ? "Hide" : "Show"} password
+            </button>
           </div>
           <button
             type="submit"
@@ -49,7 +57,7 @@ const SigninPage: React.FC = () => {
         </form>
         <p className="mt-4 text-center">
           Don't have an account?{" "}
-          <a href="#" className="text-blue-400 hover:underline">
+          <a href="/TherapistSignup" className="text-blue-400 hover:underline">
             Sign Up
           </a>
         </p>

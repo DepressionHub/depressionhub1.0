@@ -1,8 +1,11 @@
-import React from "react";
+/* eslint-disable react/jsx-no-duplicate-props */
+import React, { useState } from "react";
 import circleLogo from "../components/Footer/assets/circle.png";
 import Image from "next/image";
 
 const SignupPage: React.FC = () => {
+  const [showPassword, setShowPassword] = useState(false);
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-600 to-white-500 text-white">
       <div className="p-8 rounded-lg shadow-2xl w-full max-w-md transform hover:scale-105 transition-transform duration-300 ease-in-out bg-opacity-80 bg-gray-900">
@@ -34,11 +37,18 @@ const SignupPage: React.FC = () => {
               Password
             </label>
             <input
-              type="password"
+              type={showPassword ? "text" : "password"}
               id="password"
               className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg focus:outline-none focus:border-blue-500"
               required
             />
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              className="text-xs text-blue-400 hover:text-blue-600"
+            >
+              {showPassword ? "Hide" : "Show"} password
+            </button>
           </div>
           <div className="mb-6">
             <label

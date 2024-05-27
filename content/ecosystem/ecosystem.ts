@@ -191,7 +191,7 @@ export const ECOSYSTEM: Array<{
   {
     type: "Wallets",
     name: "Node App",
-    link: "/use/node-app",
+    link: "//use/DepressionHUB-app",
     image: "/images/ecosystem/node-app.png",
   },
   {

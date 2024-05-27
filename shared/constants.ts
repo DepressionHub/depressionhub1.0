@@ -1,7 +1,8 @@
 const SOCIAL_LINKS = {
-  twitter: "",
+  twitter: "https://twitter.com/DepressionHUB_",
   linkedin: "https://www.linkedin.com/in/depression-hub/",
-  github: "",
+  github: "https://github.com/DepressionHub",
+  discord: "https://discord.gg/Jw66mWdR",
   instagram: "https://www.instagram.com/depressionhub.in/",
 };
 

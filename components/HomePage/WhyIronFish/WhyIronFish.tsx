@@ -51,7 +51,26 @@ export function WhyIronFish() {
       >
         <StickySideBySideView>
           <StickySideBySideView.Item>
-            <Text textStyle="h3">Why Use Dpressionhub ?</Text>
+            <Text
+              textStyle="h3"
+              style={{
+                color: "#2C3E50",
+                lineHeight: "1.5",
+                textAlign: "center",
+              }}
+            >
+              Why Use Dpressionhub?
+              <br className="text-35px" />
+              <span style={{ fontSize: "28px", color: "#2980B9" }}>
+                &quot;You focus on healing, we&apos;ll take care of the
+                hope.&quot;
+              </span>
+              <br />
+              <span style={{ fontSize: "20px", color: "#34495E" }}>
+                Choose us to support you, prevent suicide, embrace life, and
+                know that you are never alone in your struggles.
+              </span>
+            </Text>
           </StickySideBySideView.Item>
           <StickySideBySideView.Item>
             {sections.map((section, i, arr) => (

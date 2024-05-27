@@ -57,8 +57,8 @@ export function Hero() {
               </Heading>
               <Text textStyle="lg" mb={10}>
                 Find people who are in the same emotional state as you, connect
-                with them, and help each other navigate life's ups and downs.{" "}
-                <br />
+                with them, and help each other navigate life&apos;s ups and
+                downs. <br />
                 <span>
                   • Low Price Therapy | Community | Clubs I Anonymous chat
                 </span>

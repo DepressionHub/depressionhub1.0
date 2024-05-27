@@ -44,7 +44,7 @@ const SEARCH_SUGGESTIONS = [
   },
   {
     heading: "Download the Desktop App",
-    slug: "/use/node-app",
+    slug: "//use/DepressionHUB-app",
   },
   {
     heading: "Mining",

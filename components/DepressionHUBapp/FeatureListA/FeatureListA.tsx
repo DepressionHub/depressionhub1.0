@@ -52,18 +52,13 @@ export function FeatureListA() {
           <AutoExpandingList {...expandingListProps}>
             <AutoExpandingList.Item
               chipColor={CHIP_COLORS.GREEN}
-              heading={
-                <Heading fontSize="xl">
-                  Easy Access to Iron Fish Network
-                </Heading>
-              }
+              heading={<Heading fontSize="xl">Anonymous Chat</Heading>}
               body={
                 <Box>
                   <Text>
-                    Once the app has synced the node, you can start using $IRON
-                    and your custom assets right away. If you do use the command
-                    line wallet, anything you do there is reflected in the node
-                    app, and vice versa.
+                    Join hands with others at DepressionHUB who know what
+                    you&apos;re going through right now. Together, we create a
+                    circle of understanding and support.
                   </Text>
                   <Box
                     mt={8}
@@ -79,14 +74,13 @@ export function FeatureListA() {
             />
             <AutoExpandingList.Item
               chipColor={CHIP_COLORS.PINK}
-              heading={
-                <Heading fontSize="xl">Centralized Account View</Heading>
-              }
+              heading={<Heading fontSize="xl">100% Trusted Therapist</Heading>}
               body={
                 <Box>
                   <Text>
-                    Access a centralized view of all your accounts: address
-                    book, balances, transactions, and more.
+                    Where therapist Meets Mental Wellness! Our team of 100+
+                    experts is revolutionizing mental health with affordable
+                    therapy starting at just 20 rupees.
                   </Text>
                   <Box
                     mt={8}
@@ -102,13 +96,13 @@ export function FeatureListA() {
             />
             <AutoExpandingList.Item
               chipColor={CHIP_COLORS.BLUE}
-              heading={<Heading fontSize="xl">Encryption Made Simple</Heading>}
+              heading={<Heading fontSize="xl">Community</Heading>}
               body={
                 <Box>
                   <Text>
-                    The node app has the same level of security as running a
-                    node via the command line, and is more secure than using
-                    third party applications.
+                    DepressionHUB Community Where We Come Together, Share
+                    Stories, and Grow Anonymously – Your Place for Support and
+                    Hope.
                   </Text>
                   <Box
                     mt={8}
@@ -141,17 +135,17 @@ export function FeatureListA() {
                   justifyContent="space-between"
                   w="100%"
                 >
-                  <Heading fontSize="xl">Bridge Assets</Heading>
+                  <Heading fontSize="xl">StoryProfit</Heading>
                   <ComingSoon />
                 </Flex>
               }
               body={
                 <Box>
                   <Text>
-                    Soon you&apos;ll be able to encrypt assets like Bitcoin and
-                    Ethereum, we pave the way for complete privacy in web3
-                    transactions. Unlocking the true potential of a private and
-                    secure blockchain ecosystem.
+                    Soon you&apos;ll be able to Share your personal stories of
+                    overcoming dark phases and inspire others. Earn money when
+                    your experiences provide valuable insights and support to
+                    those in need.
                   </Text>
                   <Box
                     mt={8}

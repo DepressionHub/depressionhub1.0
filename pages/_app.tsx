@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-css-tags */
 // pages/_app.tsx
 import { AppProps } from "next/app";
 import Head from "next/head";

@@ -2,7 +2,7 @@ import {
   PLATFORMS,
   DownloadUrlsByPlatform,
   Platform,
-} from "@/utils/nodeAppUrl/getNodeAppUrlByPlatform";
+} from "@/utils/DepressionHUBUrl/getNodeAppUrlByPlatform";
 import { isObject } from "lodash-es";
 import { useEffect, useState } from "react";
 import { UAParser } from "ua-parser-js";
@@ -63,11 +63,11 @@ async function getDataForPlatform(
     return architecture === "arm"
       ? {
           platform: PLATFORMS.MAC_ARM,
-          label: "macOS (Apple Silicon)",
+          label: "android & Apple ",
           url: downloadUrlsByPlatform[PLATFORMS.MAC_ARM],
         }
       : {
-          platform: PLATFORMS.MAC_INTEL,
+          platform: PLATFORMS.MAC_INTELL,
           label: "macOS (Intel)",
           url: downloadUrlsByPlatform[PLATFORMS.MAC_INTEL],
         };

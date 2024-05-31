@@ -1,4 +1,0 @@
-{
-  "*.ts": "prettier --write",
-  "*.tsx": "prettier --write"
-}

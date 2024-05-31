@@ -19,10 +19,10 @@ import { MdOutlineInsertDriveFile } from "react-icons/md";
 import { useRouter } from "next/router";
 
 export const DOMAINS = {
-  documentation: {
-    endpoint: "/api/search/documentation",
-    placeholder: "Search the docs",
-  },
+  // documentation: {
+  //   endpoint: "/api/search/documentation",
+  //   placeholder: "Search the docs",
+  // },
   blog: {
     endpoint: "/api/search/blog",
     placeholder: "Search the blog",

@@ -24,25 +24,24 @@ const messages = defineMessages({
   title: {
     id: "foundation.title",
     defaultMessage:
-      "Iron Fish Foundation | Fostering the growth of safe privacy",
+      "DepressionHUB Foundation | Connecting Minds, Healing souls",
   },
   heading: {
     id: "foundation.heading",
-    defaultMessage: "Iron Fish Foundation",
+    defaultMessage: "DepressionHUB Foundation",
   },
   subheading: {
     id: "foundation.subheading",
-    defaultMessage: "Fostering the growth of safe privacy",
+    defaultMessage: "Connecting Minds, Healing souls",
   },
   description: {
     id: "foundation.description",
-    defaultMessage:
-      "With mainnet launch on April 20th 2023, our ecosystem expanded and a new independent entity, the Iron Fish Foundation, was created.",
+    defaultMessage: "You focus on healing, we'll take care of the hope.",
   },
   foundationPurpose: {
     id: "foundation.foundationPurpose",
     defaultMessage:
-      "The Foundation guides Iron Fish towards premier crypto privacy. Through partnerships, grants, and events, it boosts ecosystem growth, emphasizing community-driven <govLink>governance</govLink> and fund allocation.",
+      "The Foundation guides DepressionHUB towards personal help and payment crypto privacy. Through partnerships, grants, and events, it boosts ecosystem growth, emphasizing community-driven and fund allocation.",
   },
   ironFishGrantsTitle: {
     id: "foundation.ironFishGrantsTitle",

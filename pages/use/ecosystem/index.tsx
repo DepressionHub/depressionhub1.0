@@ -149,14 +149,14 @@ export default function Ecosystem() {
   return (
     <>
       <Head>
-        <title>Iron Fish Ecosystem | Wallets, Tools, Integrations</title>
+        <title>DepressionHUB</title>
       </Head>
       <Box mb="150px">
         <Hero
           bg="orange.500"
           heading="Ecosystem"
-          subheading="How Will You Use Iron Fish?"
-          description="Our ecosystem is vast and offers a variety of apps and integrations to choose from."
+          subheading="How Will You Use DepressionHUB?"
+          description="Connecting Minds, Healing souls."
           images={
             <>
               <HeroImageUtil
@@ -225,7 +225,7 @@ export default function Ecosystem() {
               href="mailto:partnerships@ironfish.network"
               cursor="pointer"
             >
-              partnerships@ironfish.network
+              depressionhubbusiness@gmail.com
             </ThickLink>
             <chakra.span
               display={{

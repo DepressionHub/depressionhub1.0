@@ -27,27 +27,23 @@ const octoImage = octo as LocalImage;
 const STATS = [
   {
     metric: "6,000+",
-    label: "Active Nodes",
+    label: "No. of People Healed",
   },
   {
     metric: "Every",
     label: "Country Represented",
   },
   {
-    metric: "50,000+",
-    label: "Blocks Mined",
+    metric: "25,000+",
+    label: "privet Community Members",
   },
   {
     metric: "42,000+",
-    label: "Community Members",
+    label: " free Community Members",
   },
   {
     metric: "13,000+",
-    label: "Assets Minted",
-  },
-  {
-    metric: "140,000+",
-    label: "Grafittis",
+    label: "No. of Sessions Given",
   },
 ];
 

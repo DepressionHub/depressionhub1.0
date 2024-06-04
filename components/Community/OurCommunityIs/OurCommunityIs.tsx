@@ -12,21 +12,21 @@ import { Chat } from "./icons/Chat";
 
 const sections = [
   {
-    heading: "A Place to Learn",
+    heading: "A Place to Learn and Grow",
     description:
-      "The diverse Iron Fish community includes new and experienced crypto users keen to learn and share knowledge on places like Discord and the entirely user-driven Community Wiki.",
+      "DepressionHub is a diverse community where individuals learn about mental health and self-help. Whether you're new or experienced, our forums, discussions, and Knowledge Base offer valuable resources and support.",
     image: <Book />,
   },
   {
-    heading: "A Place to Create",
+    heading: "A Place to Connect and Share",
     description:
-      "Iron Fish users express their support in numerous ways, from murals and art to bug reports and community-built tools. If you create something, let us know!",
+      "We believe in the power of connection. At DepressionHub, members share personal stories, advice, and mental health resources. Join private groups to engage with others who understand and support you.",
     image: <Lightning />,
   },
   {
-    heading: "A Place to Engage",
+    heading: "A Place to Engage and Support",
     description:
-      "What do you care about? We want to know! Through Discord, Twitter, and more, the Iron Fish community is here to spark conversation and drive crypto innovation forward.",
+      "What are your mental health needs and interests? We want to know! Through private groups, forums, and social media, DepressionHub fosters open conversation and active participation to improve mental well-being for all.",
     image: <Chat />,
   },
 ];

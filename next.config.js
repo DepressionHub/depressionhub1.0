@@ -82,7 +82,7 @@ upgrade-insecure-requests;
       },
       {
         source: "/use/wallet",
-        destination: "/use/node-app",
+        destination: "/use/DepressionHUB-app",
         permanent: true,
       },
       {

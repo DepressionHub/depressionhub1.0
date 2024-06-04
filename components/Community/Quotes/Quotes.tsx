@@ -13,25 +13,20 @@ import { useCallback, useState } from "react";
 const QUOTES = [
   {
     quote:
-      "Keeping my financial information confidential is important .Cryptocurrencies like Iron Fish give me peace of mind knowing that my transactions are secure and my privacy is protected.",
-    author: "Anonymous",
-    title: "Iron Fish Community Member",
+      "I can't thank DepressionHUB enough. The community here is incredibly supportive, and the therapists are top-notch. It's not just an app; it's a beacon of hope for those facing mental health challenges.",
+    author: "Herman Jensen",
+    title: "DpressionHUB Community Member",
   },
   {
     quote:
-      "I value my financial privacy and want to ensure that my personal information is not shared with unauthorized parties - Iron Fish keeps my information from being compromised",
+      "DepressionHUB has been a lifeline for me. The therapists are compassionate and understanding, and the anonymous chat feature allowed me to open up like never before. This platform truly cares about its users' mental well-being",
     author: "Anonymous",
-    title: "Iron Fish Community Member",
+    title: "DpressionHUB Community Member",
   },
   {
-    quote: `As a cryptocurrency investor, I understand the risks associated with public ledgers that reveal transaction details. I've now found the anonymity that should be the standard`,
+    quote: `DepressionHUB is more than an app; it's a lifesaver. The anonymous chats allowed me to reach out when I needed it most, and the therapists are true professionals. This platform is making a real difference.`,
     author: "Anonymous",
-    title: "Iron Fish Community Member",
-  },
-  {
-    quote: `As a privacy advocate, I believe in the fundamental right to financial privacy. Iron Fish ensure that individuals can maintain control over their financial information.`,
-    author: "Anonymous",
-    title: "Iron Fish Community Member",
+    title: "DpressionHUB Community Member",
   },
 ];
 

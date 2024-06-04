@@ -44,7 +44,7 @@ const SEARCH_SUGGESTIONS = [
   },
   {
     heading: "Download the Desktop App",
-    slug: "/use/node-app",
+    slug: "//use/DepressionHUB-app",
   },
   {
     heading: "Mining",
@@ -131,10 +131,10 @@ export function DocumentationLayout({
                 sm: "250px",
               }}
             >
-              <SearchField
+              {/* <SearchField
                 domain="documentation"
                 suggestions={SEARCH_SUGGESTIONS}
-              />
+              /> */}
             </Box>
           </HStack>
           <Heading as="h1" size="2xl" mt={8} mb={16} fontWeight="medium">
@@ -152,22 +152,7 @@ export function DocumentationLayout({
             overflow="auto"
             top={NAV_HEIGHT}
           >
-            {githubPath && (
-              <Box textAlign="left" mb={5}>
-                <Text
-                  as="a"
-                  color="#7F7F7F"
-                  _hover={{
-                    textDecoration: "underline",
-                  }}
-                  href={`https://github.com/iron-fish/website/tree/master/${githubPath}`}
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  Edit Page on Github
-                </Text>
-              </Box>
-            )}
+            {githubPath && <Box textAlign="left" mb={5}></Box>}
             <Text textTransform="uppercase" mb={5}>
               On This Page
             </Text>

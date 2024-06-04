@@ -15,8 +15,8 @@ import {
   PLATFORM_LABELS,
   Platform,
   REPO_URL,
-} from "@/utils/nodeAppUrl/getNodeAppUrlByPlatform";
-import { useDownloadLinkForPlatform } from "@/utils/nodeAppUrl/useDownloadLinkForPlatform";
+} from "@/utils/DepressionHUBUrl/getNodeAppUrlByPlatform";
+import { useDownloadLinkForPlatform } from "@/utils/DepressionHUBUrl/useDownloadLinkForPlatform";
 import { useMemo } from "react";
 import { BsDownload } from "react-icons/bs";
 
@@ -87,7 +87,7 @@ export function DownloadForCurrentPlatform({ downloadUrlsByPlatform }: Props) {
           textDecoration: "underline",
         }}
       >
-        Having trouble? Check out the Node App FAQ
+        Having trouble? Check out the DepressionHUB FAQ
       </Text>
     </Flex>
   );
@@ -108,7 +108,7 @@ export function DownloadOptions({
         mb={10}
         textAlign="center"
       >
-        Download the Node App
+        Download the DepressionHUB App
       </Text>
       <Container
         w="100%"

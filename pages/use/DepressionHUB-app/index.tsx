@@ -5,17 +5,17 @@ import nodeApp from "../../../assets/heroImages/node-app/node-app.svg";
 import { NodeAppUIImage } from "../../../components/NodeAppUIImage/NodeAppImage";
 import { useIsClient } from "usehooks-ts";
 import Head from "next/head";
-import { FeatureListA } from "@/components/NodeApp/FeatureListA/FeatureListA";
-import { FeatureListB } from "@/components/NodeApp/FeatureListB/FeatureListB";
+import { FeatureListA } from "@/components/DepressionHUBapp/FeatureListA/FeatureListA";
+import { FeatureListB } from "@/components/DepressionHUBapp/FeatureListB/FeatureListB";
 import {
   DownloadOptions,
   DownloadForCurrentPlatform,
-} from "@/components/NodeApp/Download/Download";
+} from "@/components/DepressionHUBapp/Download/Download";
 import {
   getNodeAppUrlByPlatform,
   DownloadUrlsByPlatform,
-} from "@/utils/nodeAppUrl/getNodeAppUrlByPlatform";
-import { NodeAppFaqs } from "@/components/NodeApp/NodeAppFaqs/NodeAppFaqs";
+} from "@/utils/DepressionHUBUrl/getNodeAppUrlByPlatform";
+import { NodeAppFaqs } from "@/components/DepressionHUBapp/NodeAppFaqs/NodeAppFaqs";
 
 const eelImage = eel as LocalImage;
 const octopusImage = octopus as LocalImage;
@@ -30,7 +30,7 @@ export default function NodeApp({ downloadUrlsByPlatform }: Props) {
   return (
     <>
       <Head>
-        <title>Iron Fish Node App | A Privacy-Focused Desktop GUI</title>
+        <title>DepressionHUB App | A Privacy-Focused Mobile GUI</title>
       </Head>
       <Box>
         <Box bg="orange.500">
@@ -39,7 +39,7 @@ export default function NodeApp({ downloadUrlsByPlatform }: Props) {
             heading={
               <Flex as="h1" alignItems="center" justifyContent="center" mb={10}>
                 <Text as="span" textStyle="lg">
-                  Node App
+                  DepressionHUB
                 </Text>
                 <Box
                   as="span"
@@ -55,7 +55,8 @@ export default function NodeApp({ downloadUrlsByPlatform }: Props) {
               </Flex>
             }
             subheading="Built for everyone"
-            description="Set up a wallet and make secure transactions with our easy-to-use desktop node app."
+            description="Set up a wallet and make secure transactions and EXPERIENCE HEALING AT NO COST YOUR FIRST THERAPY SESSION
+IS 100% FREE!."
             borderBottom="none"
             textContainerProps={{
               pb: {

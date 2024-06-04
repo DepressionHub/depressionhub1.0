@@ -22,14 +22,14 @@ export default function AboutUs() {
   return (
     <>
       <Head>
-        <title>Iron Fish | About Us</title>
+        <title>DepressionHUB | About Us</title>
       </Head>
       <Box>
         <Hero
           bg="purple.500"
           heading="About Us"
-          subheading="Blockchain Encryption for All"
-          description="We're building a movement and a platform for private, accessible crypto. Care to join?"
+          subheading="Secure Support for Everyone"
+          description="We're creating a space and a movement for private, accessible mental health support. Interested in joining us?"
           images={
             <>
               <HeroImageUtil
@@ -81,16 +81,18 @@ export default function AboutUs() {
             }}
             textAlign="center"
           >
-            Iron Fish is building a decentralized{" "}
-            <ThickLink underlineColor="pink.400">privacy solution</ThickLink>{" "}
-            for crypto. Our Principles:
+            DepressionHub is building a decentralized{" "}
+            <ThickLink underlineColor="pink.400">
+              inclusive environment
+            </ThickLink>{" "}
+            for mental health support. Our Principles:
           </Text>
         </Container>
         <FancyLinkSection
-          heading="Encryption is the future of crypto"
+          heading="Privacy is the Cornerstone of Mental Health Support"
           description={[
-            "Privacy is a fundamental right, and yet everyday people give away personal information — often without even realizing it.",
-            "We enable users to protect their privacy by encrypting all transactions with zero-knowledge proofs. We adopt the highest standards for protection without compromise.",
+            "Privacy is a fundamental right, yet many people inadvertently compromise their own personal information every day.",
+            "At DepressionHub, we empower our users to protect their privacy. Every interaction within our community is shielded through robust encryption and anonymization techniques. We adhere to the highest standards of confidentiality without compromise, ensuring a safe and secure environment for everyone to share and heal.",
           ]}
           ctaText="Learn more"
           ctaLink="/learn/whitepaper"
@@ -116,10 +118,10 @@ export default function AboutUs() {
         <Box bg="black" py="150px">
           <FancyLinkSection
             reverse
-            heading="We build, together"
-            description={`As a decentralized, open-source network, Iron Fish relies on an engaged community to support protocol development and raise awareness of privacy as a social good. Our community is the heart of our platform.`}
+            heading="Building Together, Healing Together"
+            description={`As a supportive, member-focused network, DepressionHub thrives on the active engagement of its community to foster a nurturing environment and promote mental health awareness. Our community is the foundation of our platform, each member contributing to the collective healing and growth.`}
             ctaText="Join our movement"
-            ctaLink="https://discord.com/invite/EkQkEcm8DH"
+            ctaLink="https://discord.com/invite/Jw66mWdR"
             imageUrl="/images/about-us/movement-fish.svg"
             ctaColor="green.400"
             containerProps={{
@@ -144,8 +146,8 @@ export default function AboutUs() {
         </Box>
         <Box py="150px">
           <FancyLinkSection
-            heading="Common sense compliance"
-            description={`To date, crypto privacy projects have either failed to offer necessary levels of protection or, more often, they've fallen on the wrong side of public authorities. Iron Fish addresses this impasse with an encryption-enabled platform with built-in compliance controls.`}
+            heading="Balanced Confidentiality"
+            description={`To date, mental health platforms have struggled to provide privacy while adhering to regulatory standards. DepressionHub addresses this challenge by integrating robust encryption with sensible compliance measures. Our platform ensures that while member privacy is upheld, all operations remain within the bounds of legal and ethical guidelines.`}
             ctaText="Learn more"
             ctaLink="/learn/whitepaper"
             imageUrl="/images/about-us/common-sense-fish.svg"
@@ -163,7 +165,7 @@ export default function AboutUs() {
             }}
           />
         </Box>
-        <Backers />
+        {/* <Backers /> */}
       </Box>
     </>
   );

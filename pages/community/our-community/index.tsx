@@ -27,27 +27,23 @@ const octoImage = octo as LocalImage;
 const STATS = [
   {
     metric: "6,000+",
-    label: "Active Nodes",
+    label: "No. of People Healed",
   },
   {
     metric: "Every",
     label: "Country Represented",
   },
   {
-    metric: "50,000+",
-    label: "Blocks Mined",
+    metric: "25,000+",
+    label: "privet Community Members",
   },
   {
     metric: "42,000+",
-    label: "Community Members",
+    label: " free Community Members",
   },
   {
     metric: "13,000+",
-    label: "Assets Minted",
-  },
-  {
-    metric: "140,000+",
-    label: "Grafittis",
+    label: "No. of Sessions Given",
   },
 ];
 
@@ -61,8 +57,8 @@ export default function CommunityHighlights() {
         <Hero
           bg="green.400"
           heading="Community"
-          subheading="Let's Create a More Private World"
-          description="One of our core principles is that we build, together. We do this on a global scale."
+          subheading="Let's Create a More Private , helpfull & safe World"
+          description="One of our core principles is that we help people to be happy in life and to be more productive in their work and get over their depression. We are a community of people who are passionate about privacy-centric cryptocurrency. We are here to help you to get over your depression and to be happy in life. "
           images={
             <>
               <HeroImageUtil
@@ -126,12 +122,14 @@ export default function CommunityHighlights() {
           >
             The{" "}
             <ThickLink underlineColor="green.500">
-              Iron Fish community
+              DepressionHub is a supportive
             </ThickLink>{" "}
-            is home to a diverse group of miners, node operators, everyday
-            users, and people curious about crypto. Come find your place in this
-            lively, welcoming collective that is united around the idea that
-            crypto can be made safer and easier to use.
+            community dedicated to mental health and self-help. We provide a
+            safe space for individuals who are feeling depressed and lonely,
+            connecting them with others who understand their struggles. Through
+            sharing problems and offering mutual support, our members help each
+            other on their journeys to recovery. Join the best community on the
+            internet today—absolutely free.
           </Text>
         </Container>
         <Box
@@ -146,10 +144,10 @@ export default function CommunityHighlights() {
         >
           <Box textAlign="center" px={4}>
             <Text textStyle="h3" mb={8}>
-              This is Iron Fish
+              This is DepressionHUB
             </Text>
             <Text textStyle="lg" mb={16} maxW="35ch" mx="auto">
-              Our node operators and miners are globally distributed on our
+              Our therapy service and community are globally distributed on our
               decentralized network.
             </Text>
           </Box>

@@ -1,22 +1,19 @@
 import { isArray, isObject } from "lodash-es";
 
-export const REPO_URL = "https://github.com/iron-fish/ironfish-node-app";
+export const REPO_URL = "repo link";
 
-const ENDPOINT =
-  "https://api.github.com/repos/iron-fish/ironfish-node-app/releases/latest";
+const ENDPOINT = "app link here ";
 
 export const PLATFORMS = {
   WINDOWS: "windows",
   MAC_ARM: "mac-arm",
-  MAC_INTEL: "mac-intel",
 } as const;
 
 export type Platform = (typeof PLATFORMS)[keyof typeof PLATFORMS];
 
 export const PLATFORM_LABELS: Record<Platform, string> = {
-  [PLATFORMS.WINDOWS]: "Windows",
-  [PLATFORMS.MAC_ARM]: "Mac (Apple Silicon)",
-  [PLATFORMS.MAC_INTEL]: "Mac (Intel)",
+  [PLATFORMS.WINDOWS]: "android",
+  [PLATFORMS.MAC_ARM]: "Apple",
 } as const;
 
 export type DownloadUrlsByPlatform = Record<Platform, string>;
@@ -46,7 +43,6 @@ function getDownloadUrlsByPlatform(data: unknown) {
   const downloadUrlsByPlatform: Record<Platform, string> = {
     windows: "",
     "mac-arm": "",
-    "mac-intel": "",
   };
 
   for (const url of downloadUrls) {
@@ -54,8 +50,6 @@ function getDownloadUrlsByPlatform(data: unknown) {
       downloadUrlsByPlatform.windows = url;
     } else if (url.endsWith("arm64.dmg")) {
       downloadUrlsByPlatform["mac-arm"] = url;
-    } else if (url.endsWith(".dmg")) {
-      downloadUrlsByPlatform["mac-intel"] = url;
     }
   }
 

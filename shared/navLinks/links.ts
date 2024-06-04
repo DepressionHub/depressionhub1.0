@@ -32,7 +32,7 @@ export const links = [
       {
         title: messages.nodeAppTitle,
         description: messages.nodeAppDescription,
-        href: "/use/node-app",
+        href: "//use/DepressionHUB-app",
         image: "/images/nav/use-key-fish.svg",
       },
       {
@@ -47,12 +47,12 @@ export const links = [
     label: messages.community,
     color: "green",
     items: [
-      {
-        title: messages.foundationTitle,
-        description: messages.foundationDescription,
-        href: "/community/foundation",
-        image: "/images/nav/community-foundation.svg",
-      },
+      // {
+      //   title: messages.foundationTitle,
+      //   description: messages.foundationDescription,
+      //   href: "/community/foundation",
+      //   image: "/images/nav/community-foundation.svg",
+      // },
       {
         title: messages.communityTitle,
         description: messages.communityDescription,

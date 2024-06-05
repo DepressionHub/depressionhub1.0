@@ -8,11 +8,11 @@ export type Author = {
 
 export const authors: Record<string, Author> = {
   elena: {
-    name: "Elena Nadolinski",
-    title: "CEO & Founder @ Iron Fish",
-    url: "https://twitter.com/leanthebean",
-    image_url: "/images/blog/elena.png",
-    description: `Elena is the Founder and CEO of Iron Fish — previously worked at Airbnb, Tilt, and Microsoft. Fell down the cryptocurrency rabbit hole in 2017. Really didn't want her insurance to know she eats pizza.`,
+    name: "tanmay dhobale",
+    title: "CEO & Founder @ DepressionHUB",
+    url: "https://x.com/tanmayy4l",
+    image_url: "/images/blog/tanmaypfp.png",
+    description: `tanmay is the CEO & Founder of DepressionHUB `,
   },
   meg: {
     name: "Meg Blanchette",

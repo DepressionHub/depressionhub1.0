@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { v4 as uuidv4 } from "uuid";
 import {
   Box,
   Container,
@@ -13,6 +14,7 @@ import {
 import Head from "next/head";
 import Image from "next/image";
 import { NextPage } from "next";
+import chatBackground from "@/public/assets/heroImages/chatBackground.svg"; // Adjust according to your actual path
 
 interface Message {
   text: string;
@@ -24,21 +26,60 @@ const ChatNow: NextPage = () => {
   const [inChat, setInChat] = useState<boolean>(false);
   const [messages, setMessages] = useState<Message[]>([]);
   const [message, setMessage] = useState<string>("");
+  const [ws, setWs] = useState<WebSocket | null>(null);
+  const [matchId, setMatchId] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (inChat && !ws) {
+      const websocket = new WebSocket("ws://localhost:3001"); // Adjust to your server address
+      const userId = uuidv4();
+      websocket.onopen = () => {
+        websocket.send(
+          JSON.stringify({ type: "register", id: userId, interest })
+        );
+      };
+      websocket.onmessage = (event) => {
+        const data = JSON.parse(event.data);
+
+        if (data.type === "match") {
+          setMatchId(data.id);
+        } else if (data.type === "message") {
+          const receivedMessage: Message = { text: data.text, from: "system" };
+          setMessages((prevMessages) => [...prevMessages, receivedMessage]);
+        } else if (data.type === "system") {
+          const systemMessage: Message = { text: data.text, from: "system" };
+          setMessages((prevMessages) => [...prevMessages, systemMessage]);
+        }
+      };
+      websocket.onclose = () =>
+        console.log("Disconnected from WebSocket server");
+      setWs(websocket);
+    }
+  }, [inChat, ws, interest]);
 
   const handleStartChat = () => {
     setInChat(true);
     setMessages([
       {
-        text: "Hello! What would you like to discuss about " + interest + "?",
+        text: "Looking for someone to chat about " + interest + "...",
         from: "system",
       },
     ]);
   };
 
   const handleMessageSend = () => {
-    if (message.trim() !== "") {
-      setMessages([...messages, { text: message, from: "user" }]);
+    if (message.trim() !== "" && matchId) {
+      const userMessage: Message = { text: message, from: "user" };
+      setMessages([...messages, userMessage]);
+      ws?.send(JSON.stringify({ type: "message", to: matchId, text: message }));
       setMessage(""); // Clear input after send
+    }
+  };
+
+  const handleEndChat = () => {
+    if (ws) {
+      ws.send(JSON.stringify({ type: "end" }));
+      setMessages([{ text: "Looking for a new match...", from: "system" }]);
     }
   };
 
@@ -123,6 +164,9 @@ const ChatNow: NextPage = () => {
               />
               <Button onClick={handleMessageSend} colorScheme="blue">
                 Send
+              </Button>
+              <Button onClick={handleEndChat} colorScheme="red">
+                End Chat
               </Button>
             </HStack>
           </VStack>

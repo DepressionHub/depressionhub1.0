@@ -66,6 +66,7 @@
     "@types/lunr": "^2.3.7",
     "@types/remove-markdown": "^0.3.4",
     "@types/ua-parser-js": "^0.7.36",
+    "@types/uuid": "^9.0.8",
     "autoprefixer": "^10.4.19",
     "gray-matter": "^4.0.3",
     "husky": ">=6",

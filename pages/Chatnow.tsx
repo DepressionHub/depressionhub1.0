@@ -1,197 +1,134 @@
 import React, { useState } from "react";
-import { FaPhoneAlt, FaComments, FaInfoCircle } from "react-icons/fa";
-import { Box, Container, Text, Grid, GridItem, ShadowBox } from "@/lib/ui";
+import {
+  Box,
+  Container,
+  Hero,
+  Text,
+  Button,
+  Input,
+  VStack,
+  HStack,
+  useColorModeValue,
+} from "@/lib/ui";
+import Head from "next/head";
 import Image from "next/image";
+import { NextPage } from "next";
 
-const therapists = [
-  {
-    id: 2,
-    name: "Dr. Martin Seligman",
-    speciality: "Counseling Psychologist",
-    contact: "+1234567891",
-    premium: false,
-    bio: "Specializing in adolescent therapy...",
-    imageUrl:
-      "https://www.daisakuikeda.org/assets/images/audio-visual/podcasts/pod-martin-seligman.jpg",
-  },
-  {
-    id: 3,
-    name: "Dr. Daniel Kahneman",
-    speciality: "Counseling Psychologist",
-    contact: "+1234567892",
-    premium: false,
-    bio: "Focused on cognitive behavioral therapy...",
-    imageUrl:
-      "https://play-lh.googleusercontent.com/UaMM1YtGYrO7SFNFxy0ODsaIV0fpyiYLHdxmT6NqlpeXCaGtELG3uO8N-avqp8MSjw=w3840-h2160-rw",
-  },
-  {
-    id: 4,
-    name: "Dr. Steven Pinker",
-    speciality: "Clinical Psychologist",
-    contact: "+1234567890",
-    premium: true,
-    bio: "I have over 10 years of experience...",
-    imageUrl:
-      "https://humanists.international/wp-content/uploads/2020/03/Steven-Pinker-scaled.jpg",
-  },
-  {
-    id: 5,
-    name: "Dr. Dipti Yadav",
-    speciality: "Counseling Psychologist",
-    contact: "+1234567891",
-    premium: false,
-    bio: "Specializing in adolescent therapy...",
-    imageUrl:
-      "https://www.mentalwellnesscentre.com/wp-content/uploads/2021/12/Dr-Dipti-Yadav-1.jpeg",
-  },
-  {
-    id: 6,
-    name: "Dr. Jonathan Haidt",
-    speciality: "Counseling Psychologist",
-    contact: "+1234567892",
-    premium: false,
-    bio: "Focused on cognitive behavioral therapy...",
-    imageUrl:
-      "https://yt3.googleusercontent.com/3rkbva7zLAMoymEqQfvsCQ8UFROFgDQrr8MnacbzL5wxhX3kxkwHJizIZBqNRVt8al4V6LlmzA=s900-c-k-c0x00ffffff-no-rj",
-  },
-];
+interface Message {
+  text: string;
+  from: "user" | "system";
+}
 
-const ChatNow = () => {
-  const [selectedTherapist, setSelectedTherapist] = useState(null);
+const ChatNow: NextPage = () => {
+  const [interest, setInterest] = useState<string>("");
+  const [inChat, setInChat] = useState<boolean>(false);
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [message, setMessage] = useState<string>("");
+
+  const handleStartChat = () => {
+    setInChat(true);
+    setMessages([
+      {
+        text: "Hello! What would you like to discuss about " + interest + "?",
+        from: "system",
+      },
+    ]);
+  };
+
+  const handleMessageSend = () => {
+    if (message.trim() !== "") {
+      setMessages([...messages, { text: message, from: "user" }]);
+      setMessage(""); // Clear input after send
+    }
+  };
+
+  const bgUser = useColorModeValue("blue.100", "blue.900");
+  const bgSystem = useColorModeValue("gray.200", "gray.700");
 
   return (
-    <Box minH="100vh" bg="gray.100" py={10} px={4}>
-      <div style={{ textAlign: "center", marginBottom: "3rem" }}>
-        <h1
-          style={{
-            background: "linear-gradient(to right, #0057D9, #007BFF, #0057D9)",
-            padding: "20px",
-            borderRadius: "8px",
-            color: "#FFF",
-          }}
-        >
-          Connect with Our Esteemed Therapists
-        </h1>
-        <p style={{ fontSize: "1.25rem", color: "gray" }}>
-          Experience high-quality, tailored therapy sessions.
-        </p>
-      </div>
-
-      <Container
-        w="100%"
-        maxW="container.2xl"
-        px={{
-          base: 6,
-          lg: 10,
-          xl: 16,
-        }}
-        py={{
-          base: 24,
-          md: "128px",
-        }}
-      >
-        <Grid
-          templateColumns={{
-            base: "1fr",
-            md: "repeat(2, 1fr)",
-            lg: "repeat(3, 1fr)",
-          }}
-          gap={6}
-        >
-          {therapists.map((therapist) => (
-            <GridItem key={therapist.id} display="flex">
-              <ShadowBox shadowColor="green.400" p={6} borderRadius="md">
-                <Image
-                  src={therapist.imageUrl}
-                  alt={therapist.name}
-                  width={100}
-                  height={100}
-                  className="rounded-full mb-4"
-                />
-                <Text textStyle="h3" marginBottom={1}>
-                  {therapist.name}
+    <>
+      <Head>
+        <title>ChatNow - Connect Instantly</title>
+      </Head>
+      <Hero
+        bg="blue.500"
+        heading="Welcome to ChatNow!"
+        subheading="Instant connections."
+        description="Start chatting about your interests."
+      />
+      <Container maxW="100%" centerContent px={0}>
+        {!inChat ? (
+          <Box
+            w="100%"
+            p={8}
+            shadow="lg"
+            borderRadius="lg"
+            bg="white"
+            mt={10}
+            mb={10}
+          >
+            <Text mb={4} fontSize="lg">
+              Enter Your Interest
+            </Text>
+            <Input
+              placeholder="What are you interested in?"
+              value={interest}
+              onChange={(e) => setInterest(e.target.value)}
+              mb={6}
+            />
+            <Button colorScheme="blue" onClick={handleStartChat}>
+              Start Chatting
+            </Button>
+          </Box>
+        ) : (
+          <VStack
+            spacing={4}
+            w="100%"
+            p={8}
+            shadow="lg"
+            borderRadius="lg"
+            bg="white"
+            align="stretch"
+            mt={10}
+            mb={10}
+            minH="80vh"
+          >
+            {messages.map((msg, index) => (
+              <Box
+                key={index}
+                alignSelf={msg.from === "user" ? "flex-end" : "flex-start"}
+                bg={msg.from === "user" ? bgUser : bgSystem}
+                p={3}
+                borderRadius="lg"
+                maxW="70%"
+              >
+                <Text textAlign={msg.from === "user" ? "right" : "left"}>
+                  {msg.text}
                 </Text>
-                <Text textStyle="h4">{therapist.speciality}</Text>
-                <Text textStyle="body1" marginTop={2}>
-                  {therapist.bio}
-                </Text>
-                <Box display="flex" mt={4} justifyContent="space-between">
-                  <a
-                    href={`tel:${therapist.contact}`}
-                    style={{
-                      backgroundColor: "blue",
-                      color: "white",
-                      fontWeight: "bold",
-                      padding: "0.5rem 1rem",
-                      borderRadius: "0.5rem",
-                      transition: "background-color 0.3s",
-                      display: "flex",
-                      alignItems: "center",
-                    }}
-                    onMouseEnter={(e) =>
-                      (e.target.style.backgroundColor = "darkblue")
-                    }
-                    onMouseLeave={(e) =>
-                      (e.target.style.backgroundColor = "blue")
-                    }
-                  >
-                    <FaPhoneAlt style={{ marginRight: "0.5rem" }} /> Call
-                  </a>
-                  <button
-                    onClick={() =>
-                      alert(`Initiating chat with ${therapist.name}`)
-                    }
-                    style={{
-                      backgroundColor: "green",
-                      color: "white",
-                      fontWeight: "bold",
-                      padding: "0.5rem 1rem",
-                      borderRadius: "0.5rem",
-                      transition: "background-color 0.3s",
-                      display: "flex",
-                      alignItems: "center",
-                    }}
-                    onMouseEnter={(e) =>
-                      (e.target.style.backgroundColor = "darkgreen")
-                    }
-                    onMouseLeave={(e) =>
-                      (e.target.style.backgroundColor = "green")
-                    }
-                  >
-                    <FaComments style={{ marginRight: "0.5rem" }} /> Chat
-                  </button>
-                  <button
-                    onClick={() =>
-                      alert(
-                        `All the updates will be available soon about ${therapist.name}`
-                      )
-                    }
-                    style={{
-                      backgroundColor: "purple",
-                      color: "white",
-                      fontWeight: "bold",
-                      padding: "0.5rem 1rem",
-                      borderRadius: "0.5rem",
-                      transition: "background-color 0.3s",
-                      display: "flex",
-                      alignItems: "center",
-                    }}
-                  >
-                    <FaInfoCircle style={{ marginRight: "0.5rem" }} /> Info
-                  </button>
-                </Box>
-              </ShadowBox>
-            </GridItem>
-          ))}
-        </Grid>
+              </Box>
+            ))}
+            <HStack w="100%">
+              <Input
+                placeholder="Type your message here..."
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
+                onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
+                  if (e.key === "Enter") {
+                    handleMessageSend();
+                  }
+                }}
+                size="sm"
+                flexGrow={1}
+                h="36px" // Reduced height of the input box
+              />
+              <Button onClick={handleMessageSend} colorScheme="blue">
+                Send
+              </Button>
+            </HStack>
+          </VStack>
+        )}
       </Container>
-
-      {selectedTherapist && (
-        <div>
-          {/* Render modal or detailed view of selected therapist here */}
-        </div>
-      )}
-    </Box>
+    </>
   );
 };
 

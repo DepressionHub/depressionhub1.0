@@ -9,6 +9,7 @@ import {
   Button,
   FancyArrowRight,
   AspectRatio,
+  Stack,
 } from "@/lib/ui";
 import Image from "next/image";
 import Link from "next/link";
@@ -63,10 +64,17 @@ export function Hero() {
                   • Low Price Therapy | Community | Clubs I Anonymous chat
                 </span>
               </Text>
-              <Button size="lg" as={Link} href="/use/get-started">
-                <Box mr={4}>Chat Now</Box>
-                <FancyArrowRight />
-              </Button>
+              <Stack direction={{ base: "column", md: "row" }} spacing={4}>
+                <Button size="lg" as={Link} href="/Talknow">
+                  <Box mr={4}>Talk Now</Box>
+                  <FancyArrowRight />
+                </Button>
+
+                <Button size="lg" as={Link} href="/use/get-started">
+                  <Box mr={4}>Chat Now</Box>
+                  <FancyArrowRight />
+                </Button>
+              </Stack>
             </Box>
           </GridItem>
           <GridItem position="relative">

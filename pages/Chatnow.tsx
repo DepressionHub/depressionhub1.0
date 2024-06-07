@@ -49,6 +49,16 @@ const ChatNow = () => {
         } else if (data.type === "message") {
           const receivedMessage: Message = { text: data.text, from: "system" };
           setMessages((prevMessages) => [...prevMessages, receivedMessage]);
+        } else if (data.type === "unmatched") {
+          setMatchId(null);
+          setLoading(false);
+          setInChat(false);
+          setMessages([
+            {
+              text: "Your partner has ended the chat. Looking for a new match...",
+              from: "system",
+            },
+          ]);
         }
       };
       websocket.onclose = () => {
@@ -61,9 +71,15 @@ const ChatNow = () => {
   }, [inChat, ws, interests]);
 
   const handleStartChat = () => {
-    if (interests.some((interest) => interest.trim() !== "")) {
+    const validInterests = interests.filter(
+      (interest) => interest.trim() !== ""
+    );
+    if (validInterests.length > 0) {
+      setInterests(validInterests);
       setInChat(true);
       setLoading(true);
+    } else {
+      alert("Please enter at least one valid interest.");
     }
   };
 
@@ -89,9 +105,17 @@ const ChatNow = () => {
   };
 
   const addInterest = () => {
-    if (interests.length < 10) {
+    if (interests[interests.length - 1].trim() !== "") {
       setInterests([...interests, ""]);
+    } else {
+      alert("Please enter a valid interest before adding a new one.");
     }
+  };
+
+  const updateInterest = (index: number, value: string) => {
+    const updatedInterests = [...interests];
+    updatedInterests[index] = value;
+    setInterests(updatedInterests);
   };
 
   const removeInterest = (index: number) => {
@@ -137,18 +161,31 @@ const ChatNow = () => {
           <Text>Loading, searching for a match...</Text>
         ) : (
           // Chat interface
-          <VStack spacing={4}>
-            {messages.map((msg, index) => (
-              <Box
-                key={index}
-                bg={msg.from === "user" ? "blue.100" : "green.100"}
-                p={3}
-                borderRadius="md"
-                alignSelf={msg.from === "user" ? "end" : "start"}
-              >
-                <Text>{msg.text}</Text>
-              </Box>
-            ))}
+          <VStack spacing={4} width="100%">
+            <Box
+              height="600px" // Increase the height to make the chat box bigger
+              overflowY="auto"
+              padding="4"
+              borderRadius="md"
+              backgroundColor="white"
+              boxShadow="md"
+              width="100%"
+            >
+              <VStack spacing={4} alignItems="flex-start" width="100%">
+                {messages.map((msg, index) => (
+                  <Box
+                    key={index}
+                    bg={msg.from === "user" ? "blue.100" : "gray.200"}
+                    p={2}
+                    borderRadius="md"
+                    maxW="70%"
+                    alignSelf={msg.from === "user" ? "flex-end" : "flex-start"}
+                  >
+                    <Text>{msg.text}</Text>
+                  </Box>
+                ))}
+              </VStack>
+            </Box>
             <HStack width="100%">
               <Input
                 value={message}

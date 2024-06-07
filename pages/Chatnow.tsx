@@ -1,178 +1,170 @@
 import React, { useState, useEffect } from "react";
-import { v4 as uuidv4 } from "uuid";
 import {
   Box,
   Container,
-  Hero,
   Text,
   Button,
   Input,
   VStack,
   HStack,
-  useColorModeValue,
-} from "@/lib/ui";
-import Head from "next/head";
-import Image from "next/image";
-import { NextPage } from "next";
-import chatBackground from "@/public/assets/heroImages/chatBackground.svg"; // Adjust according to your actual path
+  IconButton,
+} from "@chakra-ui/react";
+import { AddIcon, CloseIcon } from "@chakra-ui/icons";
+import { v4 as uuidv4 } from "uuid";
 
 interface Message {
   text: string;
   from: "user" | "system";
 }
 
-const ChatNow: NextPage = () => {
-  const [interest, setInterest] = useState<string>("");
+const ChatNow = () => {
+  const [interests, setInterests] = useState<string[]>([""]);
   const [inChat, setInChat] = useState<boolean>(false);
   const [messages, setMessages] = useState<Message[]>([]);
   const [message, setMessage] = useState<string>("");
   const [ws, setWs] = useState<WebSocket | null>(null);
   const [matchId, setMatchId] = useState<string | null>(null);
+  const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
     if (inChat && !ws) {
-      const websocket = new WebSocket("ws://localhost:3001"); // Adjust to your server address
+      const websocket = new WebSocket("ws://localhost:8080/ws"); // Adjust to your Go server address
+
       const userId = uuidv4();
       websocket.onopen = () => {
         websocket.send(
-          JSON.stringify({ type: "register", id: userId, interest })
+          JSON.stringify({ type: "register", id: userId, interests })
         );
+        setLoading(true);
       };
       websocket.onmessage = (event) => {
         const data = JSON.parse(event.data);
 
         if (data.type === "match") {
           setMatchId(data.id);
+          setLoading(false);
+          setMessages([
+            { text: "You've been matched! Start chatting.", from: "system" },
+          ]);
         } else if (data.type === "message") {
           const receivedMessage: Message = { text: data.text, from: "system" };
           setMessages((prevMessages) => [...prevMessages, receivedMessage]);
-        } else if (data.type === "system") {
-          const systemMessage: Message = { text: data.text, from: "system" };
-          setMessages((prevMessages) => [...prevMessages, systemMessage]);
         }
       };
-      websocket.onclose = () =>
+      websocket.onclose = () => {
         console.log("Disconnected from WebSocket server");
+        setLoading(false);
+        setInChat(false);
+      };
       setWs(websocket);
     }
-  }, [inChat, ws, interest]);
+  }, [inChat, ws, interests]);
 
   const handleStartChat = () => {
-    setInChat(true);
-    setMessages([
-      {
-        text: "Looking for someone to chat about " + interest + "...",
-        from: "system",
-      },
-    ]);
+    if (interests.some((interest) => interest.trim() !== "")) {
+      setInChat(true);
+      setLoading(true);
+    }
   };
 
   const handleMessageSend = () => {
-    if (message.trim() !== "" && matchId) {
+    if (message.trim() !== "" && matchId && ws) {
       const userMessage: Message = { text: message, from: "user" };
       setMessages([...messages, userMessage]);
-      ws?.send(JSON.stringify({ type: "message", to: matchId, text: message }));
-      setMessage(""); // Clear input after send
+      ws.send(JSON.stringify({ type: "message", to: matchId, text: message }));
+      setMessage("");
     }
   };
 
   const handleEndChat = () => {
     if (ws) {
       ws.send(JSON.stringify({ type: "end" }));
-      setMessages([{ text: "Looking for a new match...", from: "system" }]);
+      ws.close();
+      setWs(null);
+      setMatchId(null);
+      setLoading(false);
+      setInChat(false);
+      setMessages([]);
     }
   };
 
-  const bgUser = useColorModeValue("blue.100", "blue.900");
-  const bgSystem = useColorModeValue("gray.200", "gray.700");
+  const addInterest = () => {
+    if (interests.length < 10) {
+      setInterests([...interests, ""]);
+    }
+  };
+
+  const removeInterest = (index: number) => {
+    if (interests.length > 1) {
+      const updatedInterests = interests.filter((_, i) => i !== index);
+      setInterests(updatedInterests);
+    }
+  };
 
   return (
-    <>
-      <Head>
-        <title>ChatNow - Connect Instantly</title>
-      </Head>
-      <Hero
-        bg="blue.500"
-        heading="Welcome to ChatNow!"
-        subheading="Instant connections."
-        description="Start chatting about your interests."
-      />
-      <Container maxW="100%" centerContent px={0}>
+    <Container centerContent>
+      <Box width="100%" p={4} borderRadius="lg" bg="gray.100" mt={10} mb={10}>
         {!inChat ? (
-          <Box
-            w="100%"
-            p={8}
-            shadow="lg"
-            borderRadius="lg"
-            bg="white"
-            mt={10}
-            mb={10}
-          >
-            <Text mb={4} fontSize="lg">
-              Enter Your Interest
-            </Text>
-            <Input
-              placeholder="What are you interested in?"
-              value={interest}
-              onChange={(e) => setInterest(e.target.value)}
-              mb={6}
-            />
-            <Button colorScheme="blue" onClick={handleStartChat}>
-              Start Chatting
-            </Button>
-          </Box>
+          // UI to enter interests
+          <VStack spacing={4}>
+            {interests.map((interest, index) => (
+              <HStack key={index} width="100%">
+                <Input
+                  value={interest}
+                  onChange={(e) => {
+                    let newInterests = [...interests];
+                    newInterests[index] = e.target.value;
+                    setInterests(newInterests);
+                  }}
+                  placeholder="Enter interest"
+                />
+                <IconButton
+                  aria-label="Remove interest"
+                  icon={<CloseIcon />}
+                  onClick={() => removeInterest(index)}
+                />
+              </HStack>
+            ))}
+            {interests.length < 10 && (
+              <Button leftIcon={<AddIcon />} onClick={addInterest} size="sm">
+                Add Interest
+              </Button>
+            )}
+            <Button onClick={handleStartChat}>Start Chatting</Button>
+          </VStack>
+        ) : loading ? (
+          // Loading message
+          <Text>Loading, searching for a match...</Text>
         ) : (
-          <VStack
-            spacing={4}
-            w="100%"
-            p={8}
-            shadow="lg"
-            borderRadius="lg"
-            bg="white"
-            align="stretch"
-            mt={10}
-            mb={10}
-            minH="80vh"
-          >
+          // Chat interface
+          <VStack spacing={4}>
             {messages.map((msg, index) => (
               <Box
                 key={index}
-                alignSelf={msg.from === "user" ? "flex-end" : "flex-start"}
-                bg={msg.from === "user" ? bgUser : bgSystem}
+                bg={msg.from === "user" ? "blue.100" : "green.100"}
                 p={3}
-                borderRadius="lg"
-                maxW="70%"
+                borderRadius="md"
+                alignSelf={msg.from === "user" ? "end" : "start"}
               >
-                <Text textAlign={msg.from === "user" ? "right" : "left"}>
-                  {msg.text}
-                </Text>
+                <Text>{msg.text}</Text>
               </Box>
             ))}
-            <HStack w="100%">
+            <HStack width="100%">
               <Input
-                placeholder="Type your message here..."
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
-                onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
-                  if (e.key === "Enter") {
-                    handleMessageSend();
-                  }
-                }}
-                size="sm"
-                flexGrow={1}
-                h="36px" // Reduced height of the input box
+                placeholder="Type a message..."
+                flex="1"
               />
-              <Button onClick={handleMessageSend} colorScheme="blue">
-                Send
-              </Button>
+              <Button onClick={handleMessageSend}>Send</Button>
               <Button onClick={handleEndChat} colorScheme="red">
                 End Chat
               </Button>
             </HStack>
           </VStack>
         )}
-      </Container>
-    </>
+      </Box>
+    </Container>
   );
 };
 

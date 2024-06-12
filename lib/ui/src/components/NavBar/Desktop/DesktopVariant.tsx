@@ -118,10 +118,10 @@ export function DesktopVariant({ content }: { content: NavItems }) {
       <HStack alignItems="center">
         <ConnectButton client={client} chain={chain} />
         <Component />
-        <Button size="lg" as={Link} href="/use/get-started">
+        {/* <Button size="lg" as={Link} href="/use/get-started">
           <Box mr={4}>Get Started</Box>
           <FancyArrowRight />
-        </Button>
+        </Button> */}
       </HStack>
     </>
   );

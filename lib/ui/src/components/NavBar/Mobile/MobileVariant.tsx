@@ -24,7 +24,7 @@ import { useRouter } from "next/router";
 import { ConnectButton } from "thirdweb/react";
 import { client } from "@/components/wallet/client";
 import { chain } from "lodash-es";
-
+import SignIn from "@/components/login/login-btn";
 export function MobileVariant({ content }: { content: NavItems }) {
   const [isOpen, setLocked] = useLockedBody(false);
   const router = useRouter();
@@ -163,16 +163,16 @@ export function MobileVariant({ content }: { content: NavItems }) {
                     <Text textStyle="h5">{item.label}</Text>
                     <RxChevronRight size="30" />
                   </HStack>
-                  
                 </ShadowBox>
               );
             })}
             <Box py={6}>
               <VStack spacing={4} align="stretch">
-                <Button size="lg" as={Link} href="/use/get-started">
+                {/* <Button size="lg" as={Link} href="/use/get-started">
                   <Box mr={4}>Get Started</Box>
                   <FancyArrowRight />
-                </Button>
+                </Button> */}
+                <SignIn />
                 <Box display="flex" justifyContent="center">
                   <ConnectButton client={client} />
                 </Box>

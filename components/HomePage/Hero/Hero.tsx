@@ -87,9 +87,13 @@ export function Hero() {
               <AspectRatio position="relative" ratio={1}>
                 <Image
                   priority
-                  src="/images/home/hero-fish.svg"
+                  src="/images/home/hero-fish.png"
                   alt=""
-                  style={{ objectFit: "contain" }}
+                  style={{
+                    objectFit: "contain",
+                    borderRadius: "3%",
+                    border: "2px solid #000",
+                  }}
                   fill
                 />
               </AspectRatio>

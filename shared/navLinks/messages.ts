@@ -31,7 +31,7 @@ export const messages = defineMessages({
   },
   getStartedDescription: {
     id: "nav.getStartedDescription",
-    defaultMessage: "Everything you need to start using Iron Fish.",
+    defaultMessage: "Everything you need to start using Depressionhub.",
   },
   nodeAppTitle: {
     id: "nav.nodeAppTitle",
@@ -64,7 +64,7 @@ export const messages = defineMessages({
   whitepaperDescription: {
     id: "nav.whitepaperDescription",
     defaultMessage:
-      "A comprehensive review of the technology behind Iron Fish.",
+      "A comprehensive review of the technology behind Depressionhub.",
   },
   tokenomicsTitle: {
     id: "nav.tokenomicsTitle",
@@ -80,7 +80,7 @@ export const messages = defineMessages({
   },
   githubDescription: {
     id: "nav.githubDescription",
-    defaultMessage: "The open-source Iron Fish repository.",
+    defaultMessage: "The open-source Depressionhub repository.",
   },
   blogTitle: {
     id: "nav.blogTitle",
@@ -92,7 +92,7 @@ export const messages = defineMessages({
   },
   aboutUsDescription: {
     id: "nav.aboutUsDescription",
-    defaultMessage: "Learn about the people behind Iron Fish.",
+    defaultMessage: "Learn about the people behind Depressionhub.",
   },
   mediaKitTitle: {
     id: "nav.mediaKitTitle",
@@ -100,7 +100,8 @@ export const messages = defineMessages({
   },
   mediaKitDescription: {
     id: "nav.mediaKitDescription",
-    defaultMessage: "Download the Iron Fish media kit and brand guidelines.",
+    defaultMessage:
+      "Download the Depressionhub media kit and brand guidelines.",
   },
   contactUsTitle: {
     id: "nav.contactUsTitle",
@@ -124,7 +125,7 @@ export const messages = defineMessages({
   },
   communityDescription: {
     id: "nav.communityDescription",
-    defaultMessage: "Keep up with the latest from the Iron Fish community.",
+    defaultMessage: "Keep up with the latest from the Depressionhub community.",
   },
   ecosystemTitle: {
     id: "nav.ecosystemTitle",
@@ -141,7 +142,7 @@ export const messages = defineMessages({
   },
   governanceDescription: {
     id: "nav.governanceDescription",
-    defaultMessage: "How the Iron Fish protocol is governed.",
+    defaultMessage: "How the Depressionhub protocol is governed.",
   },
   grantsTitle: {
     id: "nav.grantsTitle",
@@ -158,6 +159,6 @@ export const messages = defineMessages({
   },
   foundationDescription: {
     id: "nav.foundationDescription",
-    defaultMessage: "Guiding Iron Fish towards premier crypto privacy.",
+    defaultMessage: "Guiding Depressionhub towards premier crypto privacy.",
   },
 });

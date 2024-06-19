@@ -67,8 +67,10 @@ async function getDataForPlatform(
           url: downloadUrlsByPlatform[PLATFORMS.MAC_ARM],
         }
       : {
+          // @ts-ignore
           platform: PLATFORMS.MAC_INTELL,
           label: "macOS (Intel)",
+          // @ts-ignore
           url: downloadUrlsByPlatform[PLATFORMS.MAC_INTEL],
         };
   }

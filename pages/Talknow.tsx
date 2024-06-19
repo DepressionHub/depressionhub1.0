@@ -129,10 +129,12 @@ const ChatNow = () => {
                       alignItems: "center",
                     }}
                     onMouseEnter={(e) =>
-                      (e.target.style.backgroundColor = "darkblue")
+                      ((e.target as HTMLAnchorElement).style.backgroundColor =
+                        "darkblue")
                     }
                     onMouseLeave={(e) =>
-                      (e.target.style.backgroundColor = "blue")
+                      ((e.target as HTMLAnchorElement).style.backgroundColor =
+                        "blue")
                     }
                   >
                     <FaPhoneAlt style={{ marginRight: "0.5rem" }} /> Call
@@ -152,10 +154,12 @@ const ChatNow = () => {
                       alignItems: "center",
                     }}
                     onMouseEnter={(e) =>
-                      (e.target.style.backgroundColor = "darkgreen")
+                      ((e.target as HTMLButtonElement).style.backgroundColor =
+                        "darkgreen")
                     }
                     onMouseLeave={(e) =>
-                      (e.target.style.backgroundColor = "green")
+                      ((e.target as HTMLAnchorElement).style.backgroundColor =
+                        "green")
                     }
                   >
                     <FaComments style={{ marginRight: "0.5rem" }} /> Chat

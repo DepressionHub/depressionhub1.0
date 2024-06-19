@@ -15,7 +15,7 @@ export function NodeAppUIImage(props: FlexProps) {
         height: 471,
       },
       lg: {
-        src: "/images/shared/node-app-ui/node-app-ui-lg.svg",
+        src: "/images/shared/node-app-ui/node-app-ui-xl.svg",
         width: 1016,
         height: 471,
       },

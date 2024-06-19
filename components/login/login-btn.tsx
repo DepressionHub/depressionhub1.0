@@ -1,18 +1,73 @@
+/* eslint-disable @next/next/no-img-element */
+import { useState } from "react";
+import { Stack, Button } from "@chakra-ui/react";
+import { useSession, signOut, signIn } from "next-auth/react";
 import { FancyArrowRight } from "@/lib/ui";
-import { Stack, Button, Box } from "@chakra-ui/react";
-import { useSession, signIn, signOut } from "next-auth/react";
 
-export default function signin() {
-  // eslint-disable-next-line react-hooks/rules-of-hooks
+export default function Signin() {
   const { data: session } = useSession();
+  const [showSignOut, setShowSignOut] = useState(false);
+
+  const toggleSignOut = () => {
+    setShowSignOut(!showSignOut);
+  };
+
+  const handleSignOut = () => {
+    signOut();
+    setShowSignOut(false); // Close sign-out option after signing out
+  };
 
   return (
     <div>
-      <Stack direction={{ base: "column", md: "row" }} spacing={4}>
-        <Button onClick={() => (session ? signOut() : signIn())}>
-          {session ? "Sign out" : "Sign in"}
-          <FancyArrowRight />
-        </Button>
+      <Stack
+        direction={{ base: "column", md: "row" }}
+        spacing={4}
+        alignItems="center"
+      >
+        {session ? (
+          <div style={{ position: "relative" }}>
+            {session.user && (
+              <img
+                src={session.user.image ?? ""}
+                alt="Profile Picture"
+                style={{
+                  width: "40px",
+                  height: "40px",
+                  borderRadius: "50%",
+                  objectFit: "cover",
+                  cursor: "pointer", // Add cursor pointer to indicate it's clickable
+                }}
+                onClick={toggleSignOut}
+              />
+            )}
+            {showSignOut && (
+              <Button
+                onClick={handleSignOut}
+                variant="outline"
+                size="sm"
+                colorScheme="red"
+                style={{
+                  position: "absolute",
+                  top: "80px", // Adjust position as needed
+                  right: "0",
+                  borderRadius: "999px", // Makes the button circular
+                }}
+              >
+                Sign out <FancyArrowRight />
+              </Button>
+            )}
+          </div>
+        ) : (
+          <Button
+            onClick={() => signIn()}
+            variant="outline"
+            size="sm"
+            colorScheme="blue"
+            rightIcon={<FancyArrowRight />}
+          >
+            Sign in
+          </Button>
+        )}
       </Stack>
     </div>
   );

@@ -9,7 +9,7 @@ import {
   Stack,
   Text,
 } from "@/lib/ui";
-import FullLogo from "./assets/full-logo.png";
+
 import HexFish from "./assets/hex-fish.svg";
 
 export function LogoDownloads() {
@@ -79,7 +79,6 @@ export function LogoDownloads() {
         <Box w="100%" maxW="510px">
           <ShadowBox>
             <Flex flexDirection="column" px={12} py="96px" alignItems="center">
-              <Image src={FullLogo} alt="Iron Fish logo" />
               <Text
                 fontSize="26px"
                 fontFamily="FavoritExtendedIf"

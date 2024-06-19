@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-html-link-for-pages */
 import React, { useState } from "react";
 import circleLogo from "../components/Footer/assets/circle.png";
 import Image from "next/image";

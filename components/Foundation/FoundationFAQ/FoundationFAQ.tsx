@@ -1,5 +1,5 @@
 import { Container, FAQItem, Text, Box, Link } from "@/lib/ui";
-import { GRANTS_FORM_URL } from "@/shared/constants";
+export const GRANTS_FORM_URL = "https://example.com/grants";
 import { defineMessages, useIntl } from "react-intl";
 
 const messages = defineMessages({

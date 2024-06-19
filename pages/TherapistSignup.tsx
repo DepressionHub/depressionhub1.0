@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-html-link-for-pages */
 /* eslint-disable react/jsx-no-duplicate-props */
 import React, { useState } from "react";
 import circleLogo from "../components/Footer/assets/circle.png";

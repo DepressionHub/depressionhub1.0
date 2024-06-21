@@ -28,7 +28,7 @@ const ChatNow = () => {
 
   useEffect(() => {
     if (inChat && !ws) {
-      const websocket = new WebSocket("ws://localhost:8080/ws"); // Adjust to your Go server address
+      const websocket = new WebSocket("https://ws-golang-8s00.onrender.com/ws"); // Adjust to your Go server address
 
       const userId = uuidv4();
       websocket.onopen = () => {

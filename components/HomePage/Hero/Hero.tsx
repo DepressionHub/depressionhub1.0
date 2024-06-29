@@ -101,7 +101,6 @@ export function Hero() {
           </GridItem>
         </Grid>
       </Container>
-      <Chatbox />
     </>
   );
 }

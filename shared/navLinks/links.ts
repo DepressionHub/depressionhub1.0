@@ -8,7 +8,7 @@ export const links = [
       {
         title: messages.faqTitle,
         description: messages.faqDescription,
-        href: "/TherapistSignup",
+        href: "/TherpistApply",
         image: "/images/nav/learn-mag-glass.svg",
       },
       {

@@ -62,9 +62,14 @@ export function Footer() {
         md: 16,
       }}
     >
-    
-      <Box  mb={15}>
-     <Image src={Logo} className=" mb-15" alt="depressionhub" width={400} height={100} />
+      <Box mb={15}>
+        <Image
+          src={Logo}
+          className="mb-15"
+          alt="depressionhub"
+          width={400}
+          height={100}
+        />
       </Box>
       <Text
         fontSize={{
@@ -171,7 +176,13 @@ export function Footer() {
             lg: 0,
           }}
         >
-           <Image src={Circle} className=" mb-15" alt="depressionhub" width={40} height={10} />
+          <Image
+            src={Circle}
+            className=" mb-15"
+            alt="depressionhub"
+            width={40}
+            height={10}
+          />
           <Flex
             ml={4}
             alignItems={{

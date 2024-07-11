@@ -1,100 +1,126 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
-generator client {
-  provider = "prisma-client-js"
-}
 
+// User Authentication (leveraging NextAuth)
 model User {
-  id             String           @id @default(cuid())
-  name           String?
-  email          String           @unique
-  emailVerified  DateTime?
-  image          String?
-  accounts       Account[]
-  sessions       Session[]
-  role           Role             @default(USER)
-  createdAt      DateTime         @default(now())
-  updatedAt      DateTime         @updatedAt
-  therapist      Therapist[]
-  TherapySession TherapySession[]
-}
-
-model Therapist {
-  id             Int              @id @default(autoincrement())
-  userId         String           @unique
-  user           User             @relation(fields: [userId], references: [id])
-  bio            String?
-  specialties    String[]
-  ratePerSession Float
-  createdAt      DateTime         @default(now())
-  updatedAt      DateTime         @updatedAt
-  sessions       TherapySession[]
-}
-
-model TherapySession {
-  id            Int           @id @default(autoincrement())
-  userId        String
-  therapistId   Int
-  dateTime      DateTime
-  amount        Float
-  status        SessionStatus @default(PENDING)
-  transactionId String?
-  createdAt     DateTime      @default(now())
-  updatedAt     DateTime      @updatedAt
-  user          User          @relation(fields: [userId], references: [id])
-  therapist     Therapist     @relation(fields: [therapistId], references: [id])
+  id            String    @id @default(cuid())
+  email         String    @unique
+  emailVerified DateTime?
+  name          String?
+  image         String?
+  accounts      Account[]
+  sessions      Session[]
+  therapist     Therapist?
 }
 
 model Account {
+  id                String  @id @default(cuid())
   userId            String
   type              String
   provider          String
   providerAccountId String
-  refresh_token     String?
-  access_token      String?
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
   expires_at        Int?
   token_type        String?
   scope             String?
-  id_token          String?
+  id_token          String? @db.Text
   session_state     String?
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  @@id([provider, providerAccountId])
+  @@unique([provider, providerAccountId])
 }
 
 model Session {
+  id           String   @id @default(cuid())
   sessionToken String   @unique
   userId       String
   expires      DateTime
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
 }
 
 model VerificationToken {
   identifier String
-  token      String
+  token      String   @unique
   expires    DateTime
 
-  @@id([identifier, token])
+  @@unique([identifier, token])
 }
 
-enum Role {
-  USER
-  THERAPIST
+// Therapist Profile
+model Therapist {
+  id                String   @id @default(cuid())
+  userId            String   @unique
+  user              User     @relation(fields: [userId], references: [id])
+  type              TherapistType
+  fullName          String
+  dateOfBirth       DateTime
+  gender            String
+  currentLocation   String
+  languages         String[]
+  hoursAvailable    Int
+  experienceYears   Float
+  heardFrom         String
+  workingElsewhere  Boolean
+  whyJoining        String   @db.Text
+  linkedinProfile   String?
+  referredBy        String?
+  longBio           String   @db.Text
+  isVerified        Boolean  @default(false)
+  specializations   Specialization[]
+  certifications    Certification[]
+  education         Education[]
+  workExperience    WorkExperience[]
 }
 
-enum SessionStatus {
-  PENDING
-  ACCEPTED
-  COMPLETED
-  CANCELLED
+enum TherapistType {
+  PROFESSIONAL
+  STUDENT
+}
+
+model Specialization {
+  id          String    @id @default(cuid())
+  name        String    @unique
+  therapists  Therapist[]
+}
+
+model Certification {
+  id          String   @id @default(cuid())
+  name        String
+  issuedAt    DateTime
+  expiresAt   DateTime?
+  issuedBy    String
+  therapistId String
+  therapist   Therapist @relation(fields: [therapistId], references: [id])
+}
+
+model Education {
+  id          String   @id @default(cuid())
+  institution String
+  degree      String
+  fieldOfStudy String
+  startDate   DateTime
+  endDate     DateTime?
+  grade       Float?
+  therapistId String
+  therapist   Therapist @relation(fields: [therapistId], references: [id])
+}
+
+model WorkExperience {
+  id          String   @id @default(cuid())
+  company     String
+  position    String
+  startDate   DateTime
+  endDate     DateTime?
+  description String?
+  therapistId String
+  therapist   Therapist @relation(fields: [therapistId], references: [id])
 }

@@ -51,7 +51,7 @@ export function UseCase() {
           {formatMessage(messages.description)}
         </Text>
         <HStack justifyContent="center" gap={8}>
-          <FancyLink href="//use/DepressionHUB-app" color="pink.400">
+          <FancyLink href="/use/DepressionHUB-app" color="pink.400">
             The App
           </FancyLink>
           <FancyLink href="/use/get-started" color="green.400">

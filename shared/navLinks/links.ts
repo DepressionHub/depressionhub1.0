@@ -32,7 +32,7 @@ export const links = [
       {
         title: messages.nodeAppTitle,
         description: messages.nodeAppDescription,
-        href: "//use/DepressionHUB-app",
+        href: "/use/DepressionHUB-app",
         image: "/images/nav/use-key-fish.svg",
       },
       {

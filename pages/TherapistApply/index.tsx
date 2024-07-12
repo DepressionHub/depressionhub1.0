@@ -161,6 +161,12 @@ export default function TherapistApply({ therapist }: TherapistApplyProps) {
     }));
   };
 
+  const removeArrayItem = (field: keyof FormData, index: number) => {
+    setFormData((prev) => ({
+      ...prev,
+      [field]: (prev[field] as any[]).filter((_, i) => i !== index),
+    }));
+  };
   const addArrayItem = (field: keyof FormData) => {
     setFormData((prev) => ({
       ...prev,
@@ -380,16 +386,37 @@ export default function TherapistApply({ therapist }: TherapistApplyProps) {
                     >
                       Yes, Im working elsewhere
                     </Checkbox>
-                    <Text className="mt-4">Why are you joining?</Text>
-                    <Textarea
-                      name="whyJoining"
-                      value={formData.whyJoining}
-                      onChange={handleChange}
-                      placeholder="Why are you joining?"
-                      size="sm"
-                      className="w-full"
-                      variant="flushed"
-                    />
+                    <Checkbox
+                      name="workingElsewhere"
+                      isChecked={formData.workingElsewhere}
+                      onChange={(e) =>
+                        setFormData((prev) => ({
+                          ...prev,
+                          workingElsewhere: e.target.checked,
+                        }))
+                      }
+                    >
+                      No, Im not working
+                    </Checkbox>
+                    <Box
+                      border="1px"
+                      borderColor="gray.200"
+                      borderRadius="md"
+                      p={5}
+                      boxShadow="sm"
+                      mt={4}
+                    >
+                      <Text mb={2}>Why are you joining?</Text>
+                      <Textarea
+                        name="whyJoining"
+                        value={formData.whyJoining}
+                        onChange={handleChange}
+                        placeholder="Why are you joining?"
+                        size="sm"
+                        className="w-full"
+                        variant="flushed"
+                      />
+                    </Box>
                     <Text className="mt-4">LinkedIn Profile</Text>
                     <Input
                       name="linkedinProfile"
@@ -400,6 +427,7 @@ export default function TherapistApply({ therapist }: TherapistApplyProps) {
                       className="w-full"
                       variant="flushed"
                     />
+
                     <Text className="mt-4">Referred By</Text>
                     <Input
                       name="referredBy"
@@ -410,17 +438,26 @@ export default function TherapistApply({ therapist }: TherapistApplyProps) {
                       className="w-full"
                       variant="flushed"
                     />
-                    <Text className="mt-4">Long Bio</Text>
-                    <Textarea
-                      name="longBio"
-                      value={formData.longBio}
-                      onChange={handleChange}
-                      placeholder="Long Bio"
-                      size="sm"
-                      className="w-full"
-                      variant="flushed"
-                    />
-                    {/* Certifications */}
+                    <Box
+                      border="1px"
+                      borderColor="gray.200"
+                      borderRadius="md"
+                      p={4}
+                      boxShadow="sm"
+                      mt={4}
+                    >
+                      <Text className="mt-4">Long Bio</Text>
+                      <Textarea
+                        name="longBio"
+                        value={formData.longBio}
+                        onChange={handleChange}
+                        placeholder="Long Bio"
+                        size="sm"
+                        className="w-full"
+                        variant="flushed"
+                      />
+                    </Box>
+                    {/* Certifications
                     <Text className="mt-4">Certifications</Text>
                     {formData.certifications.map((cert, index) => (
                       <Box key={index} mb={4}>
@@ -493,7 +530,7 @@ export default function TherapistApply({ therapist }: TherapistApplyProps) {
                       size="sm"
                     >
                       Add Certification
-                    </ArrowButton>
+                    </ArrowButton> */}
 
                     {/* Education */}
                     <Text className="mt-4">Education</Text>
@@ -581,18 +618,27 @@ export default function TherapistApply({ therapist }: TherapistApplyProps) {
                           step="0.1"
                           placeholder="Grade"
                           value={edu.grade || ""}
-                          onChange={(e) =>
-                            handleArrayChange(
-                              index,
-                              "education",
-                              "grade",
-                              e.target.value
-                            )
-                          }
+                          onChange={(e) => {
+                            const value = parseFloat(e.target.value);
+                            if (!isNaN(value) && value >= 0) {
+                              handleArrayChange(
+                                index,
+                                "education",
+                                "grade",
+                                value
+                              );
+                            }
+                          }}
                           size="sm"
                           className="w-full mb-2"
                           variant="flushed"
                         />
+                        <ArrowButton
+                          onClick={() => removeArrayItem("education", index)}
+                          size="sm"
+                        >
+                          Remove Education
+                        </ArrowButton>
                       </Box>
                     ))}
                     <ArrowButton

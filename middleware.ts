@@ -8,16 +8,20 @@ export async function middleware(request: NextRequest) {
     secret: process.env.NEXTAUTH_SECRET,
   });
 
-  if (!token) {
+  console.log("Middleware token:", token);
+
+  if (!token && request.nextUrl.pathname === "/TherapistDashboard") {
+    console.log("No token, redirecting to sign in");
     const url = request.nextUrl.clone();
     url.pathname = "/api/auth/signin";
     url.searchParams.set("callbackUrl", request.url);
     return NextResponse.redirect(url);
   }
 
+  console.log("Proceeding to next middleware or route handler");
   return NextResponse.next();
 }
 
 export const config = {
-  matcher: ["/TherapistApply", "/TherapistDashboard"],
+  matcher: ["/TherapistDashboard"],
 };

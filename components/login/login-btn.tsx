@@ -14,7 +14,7 @@ export default function Signin() {
 
   const handleSignOut = () => {
     signOut();
-    setShowSignOut(false); // Close sign-out option after signing out
+    setShowSignOut(false);
   };
 
   return (
@@ -35,7 +35,7 @@ export default function Signin() {
                   height: "40px",
                   borderRadius: "50%",
                   objectFit: "cover",
-                  cursor: "pointer", // Add cursor pointer to indicate it's clickable
+                  cursor: "pointer",
                 }}
                 onClick={toggleSignOut}
               />
@@ -48,9 +48,9 @@ export default function Signin() {
                 colorScheme="red"
                 style={{
                   position: "absolute",
-                  top: "80px", // Adjust position as needed
+                  top: "80px",
                   right: "0",
-                  borderRadius: "999px", // Makes the button circular
+                  borderRadius: "999px",
                 }}
               >
                 Sign out <FancyArrowRight />

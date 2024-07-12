@@ -1,5 +1,5 @@
 import { GetServerSideProps } from "next";
-import { getSession, useSession } from "next-auth/react";
+import { getSession, useSession, signIn } from "next-auth/react";
 import prisma from "../../db/db";
 import { Therapist, Specialization } from "@prisma/client";
 import { useEffect } from "react";
@@ -19,14 +19,28 @@ export default function TherapistDashboard({
   const { data: session, status } = useSession();
   const router = useRouter();
 
+  console.log("Session status:", status);
+  console.log("Session data:", session);
+
   useEffect(() => {
     if (status === "unauthenticated") {
-      router.push("/api/auth/signin?callbackUrl=/TherapistDashboard");
+      console.log("Redirecting to sign in...");
+      signIn(undefined, { callbackUrl: router.asPath });
     }
   }, [status, router]);
 
-  if (status === "loading" || !therapist) {
+  if (status === "loading") {
     return <div>Loading...</div>;
+  }
+
+  if (!session) {
+    return <div>Please sign in to access the dashboard.</div>;
+  }
+
+  if (!therapist) {
+    return (
+      <div>Therapist information not found. Please complete your profile.</div>
+    );
   }
 
   return (
@@ -46,12 +60,13 @@ export const getServerSideProps: GetServerSideProps<
   TherapistDashboardProps
 > = async (context) => {
   const session = await getSession(context);
-  if (!session?.user?.id) {
+
+  console.log("Session in getServerSideProps:", session);
+
+  if (!session || !session.user || !session.user.id) {
+    console.log("No session or user ID, returning null therapist");
     return {
-      redirect: {
-        destination: "/api/auth/signin?callbackUrl=/TherapistDashboard",
-        permanent: false,
-      },
+      props: { therapist: null },
     };
   }
 
@@ -60,7 +75,10 @@ export const getServerSideProps: GetServerSideProps<
     include: { specializations: true },
   });
 
+  console.log("Therapist found:", therapist ? "Yes" : "No");
+
   if (!therapist) {
+    console.log("No therapist, redirecting to TherapistApply");
     return {
       redirect: {
         destination: "/TherapistApply",

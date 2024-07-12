@@ -15,6 +15,7 @@ export const authOptions: NextAuthOptions = {
   secret: process.env.NEXTAUTH_SECRET || "secret",
   callbacks: {
     async jwt({ token, user, account }) {
+      console.log("JWT callback", { token, user, account });
       if (account && user) {
         token.accessToken = account.access_token;
         token.id = user.id;
@@ -22,6 +23,7 @@ export const authOptions: NextAuthOptions = {
       return token;
     },
     async session({ session, token, user }) {
+      console.log("Session callback", { session, token, user });
       if (token) {
         session.accessToken = token.accessToken as string;
         if (session.user) {
@@ -32,6 +34,7 @@ export const authOptions: NextAuthOptions = {
     },
   },
   session: { strategy: "jwt" as SessionStrategy },
+  debug: true, // Enable debug messages
 };
 
 export default NextAuth(authOptions);

@@ -26,18 +26,20 @@ export default async function handler(
     languages,
     hoursAvailable,
     experienceYears,
-    specializations,
+    specializations = [],
     heardFrom,
     workingElsewhere,
     whyJoining,
     linkedinProfile,
     referredBy,
     longBio,
-    certifications,
-    education,
-    workExperience,
+    certifications = [],
+    education = [],
+    workExperience = [],
   } = req.body;
-
+  const specializationArray = Array.isArray(specializations)
+    ? specializations
+    : [];
   try {
     const therapistData = {
       userId: session.user.id,
@@ -46,7 +48,7 @@ export default async function handler(
       dateOfBirth: new Date(dateOfBirth),
       gender,
       currentLocation,
-      languages,
+      languages: languages.split(",").map((lang: string) => lang.trim()),
       hoursAvailable: Number(hoursAvailable),
       experienceYears: Number(experienceYears),
       heardFrom,
@@ -56,9 +58,8 @@ export default async function handler(
       referredBy,
       longBio,
       specializations: {
-        connectOrCreate: specializations.map((name: string) => ({
-          where: { name: name.trim() },
-          create: { name: name.trim() },
+        create: specializationArray.map((spec: any) => ({
+          name: spec.name,
         })),
       },
       certifications: {

@@ -4,6 +4,18 @@ import prisma from "@/db/db";
 import { Therapist } from "@prisma/client";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
+import {
+  ArrowButton,
+  Box,
+  Container,
+  Input,
+  Radio,
+  RadioGroup,
+  ShadowBox,
+  Stack,
+  Text,
+  Textarea,
+} from "@/lib/ui";
 
 interface SerializedTherapist extends Omit<Therapist, "dateOfBirth"> {
   dateOfBirth: string | null;
@@ -15,6 +27,7 @@ interface TherapistApplyProps {
 
 export default function TherapistApply({ therapist }: TherapistApplyProps) {
   const { data: session, status } = useSession();
+  const [isSubmitted, setIsSubmitted] = useState(false);
   const router = useRouter();
   const [formData, setFormData] = useState({
     type: "",
@@ -32,14 +45,6 @@ export default function TherapistApply({ therapist }: TherapistApplyProps) {
     linkedinProfile: "",
     referredBy: "",
     longBio: "",
-    certifications: [
-      {
-        name: "",
-        issuedAt: "",
-        expiresAt: "",
-        issuedBy: "",
-      },
-    ],
     education: [
       {
         institution: "",
@@ -67,36 +72,18 @@ export default function TherapistApply({ therapist }: TherapistApplyProps) {
     }
   }, [status, router]);
 
-  const handleChange = (
-    e: React.ChangeEvent<
-      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
-    >
-  ) => {
-    const { name, value } = e.target;
+  const handleChange = (name: string, value: string) => {
     setFormData((prev) => ({
       ...prev,
       [name]: value,
     }));
   };
 
-  const handleCertificationChange = (
-    index: number,
-    e: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      certifications: prev.certifications.map((cert, i) =>
-        i === index ? { ...cert, [name]: value } : cert
-      ),
-    }));
-  };
-
   const handleEducationChange = (
     index: number,
-    e: React.ChangeEvent<HTMLInputElement>
+    name: string,
+    value: string
   ) => {
-    const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
       education: prev.education.map((edu, i) =>
@@ -107,9 +94,9 @@ export default function TherapistApply({ therapist }: TherapistApplyProps) {
 
   const handleWorkExperienceChange = (
     index: number,
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    name: string,
+    value: string
   ) => {
-    const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
       workExperience: prev.workExperience.map((exp, i) =>
@@ -131,6 +118,7 @@ export default function TherapistApply({ therapist }: TherapistApplyProps) {
       });
 
       if (response.ok) {
+        setIsSubmitted(true);
         router.push("/TherapistDashboard");
       } else {
         console.error("Failed to register therapist:", response.statusText);
@@ -141,461 +129,584 @@ export default function TherapistApply({ therapist }: TherapistApplyProps) {
   };
 
   if (status === "loading") {
-    return <div>Loading...</div>;
+    return <Text>Loading...</Text>;
   }
 
   if (!session) {
-    return <div>Please sign in to apply as a therapist.</div>;
+    return <Text>Please sign in to apply as a therapist.</Text>;
   }
 
   if (therapist) {
-    return <div>You have already submitted an application as a therapist.</div>;
+    return (
+      <Text>You have already submitted an application as a therapist.</Text>
+    );
   }
 
   return (
-    <div>
-      <h1>Apply as a Therapist</h1>
-      <form onSubmit={handleSubmit}>
-        <div className="form-section">
-          <h2>Basic Information</h2>
-          <label>
-            Type:
-            <select
-              name="type"
-              value={formData.type}
-              onChange={handleChange}
-              required
-            >
-              <option value="">Select</option>
-              <option value="PROFESSIONAL">Professional</option>
-              <option value="STUDENT">Student</option>
-            </select>
-          </label>
-          <label>
-            Full Name:
-            <input
-              type="text"
-              name="fullName"
-              value={formData.fullName}
-              onChange={handleChange}
-              required
-            />
-          </label>
-          <label>
-            Date of Birth:
-            <input
-              type="date"
-              name="dateOfBirth"
-              value={formData.dateOfBirth}
-              onChange={handleChange}
-              required
-            />
-          </label>
-          <label>
-            Gender:
-            <select
-              name="gender"
-              value={formData.gender}
-              onChange={handleChange}
-              required
-            >
-              <option value="">Select</option>
-              <option value="male">Male</option>
-              <option value="female">Female</option>
-              <option value="other">Other</option>
-            </select>
-          </label>
-          <label>
-            Current Location:
-            <input
-              type="text"
-              name="currentLocation"
-              value={formData.currentLocation}
-              onChange={handleChange}
-              required
-            />
-          </label>
-          <label>
-            Languages Spoken:
-            <input
-              type="text"
-              name="languages"
-              value={formData.languages}
-              onChange={handleChange}
-              required
-            />
-          </label>
-          <label>
-            Hours Available:
-            <input
-              type="number"
-              name="hoursAvailable"
-              value={formData.hoursAvailable}
-              onChange={handleChange}
-              required
-            />
-          </label>
-          <label>
-            Experience (Years):
-            <input
-              type="number"
-              name="experienceYears"
-              value={formData.experienceYears}
-              onChange={handleChange}
-              required
-            />
-          </label>
-          <label>
-            Specializations (comma separated):
-            <input
-              type="text"
-              name="specializations"
-              value={formData.specializations}
-              onChange={handleChange}
-              required
-            />
-          </label>
-          <label>
-            Heard From:
-            <input
-              type="text"
-              name="heardFrom"
-              value={formData.heardFrom}
-              onChange={handleChange}
-              required
-            />
-          </label>
-          <label>
-            Working Elsewhere:
-            <select
-              name="workingElsewhere"
-              value={formData.workingElsewhere}
-              onChange={handleChange}
-              required
-            >
-              <option value="">Select</option>
-              <option value="true">Yes</option>
-              <option value="false">No</option>
-            </select>
-          </label>
-          <label>
-            Why Joining:
-            <textarea
-              name="whyJoining"
-              value={formData.whyJoining}
-              onChange={handleChange}
-              required
-            />
-          </label>
-          <label>
-            LinkedIn Profile:
-            <input
-              type="text"
-              name="linkedinProfile"
-              value={formData.linkedinProfile}
-              onChange={handleChange}
-            />
-          </label>
-          <label>
-            Referred By:
-            <input
-              type="text"
-              name="referredBy"
-              value={formData.referredBy}
-              onChange={handleChange}
-            />
-          </label>
-          <label>
-            Long Bio:
-            <textarea
-              name="longBio"
-              value={formData.longBio}
-              onChange={handleChange}
-              required
-            />
-          </label>
-        </div>
-
-        <div className="form-section">
-          <h2>Certifications</h2>
-          {formData.certifications.map((cert, index) => (
-            <div key={index} className="sub-section">
-              <label>
-                Name:
-                <input
-                  type="text"
-                  name="name"
-                  value={cert.name}
-                  onChange={(e) => handleCertificationChange(index, e)}
+    <Container maxWidth="800px" margin="0 auto">
+      <Box padding="2rem">
+        <Text as="h1" fontSize="2xl" fontWeight="bold" marginBottom="2rem">
+          Apply as a Therapist
+        </Text>
+        <form onSubmit={handleSubmit}>
+          <ShadowBox marginBottom="2rem">
+            <Text as="h2" fontSize="xl" fontWeight="bold" marginBottom="1rem">
+              Basic Information
+            </Text>
+            <Stack spacing="1rem">
+              <Box>
+                <Text
+                  as="label"
+                  htmlFor="type"
+                  marginBottom="0.5rem"
+                  display="block"
+                >
+                  Type:
+                </Text>
+                <select
+                  id="type"
+                  name="type"
+                  value={formData.type}
+                  onChange={(e) => handleChange("type", e.target.value)}
                   required
+                  className="border rounded p-2"
+                >
+                  <option value="">Select</option>
+                  <option value="PROFESSIONAL">Professional</option>
+                  <option value="STUDENT">Student</option>
+                </select>
+              </Box>
+              <Box>
+                <Text
+                  as="label"
+                  htmlFor="fullName"
+                  marginBottom="0.5rem"
+                  display="block"
+                >
+                  Full Name
+                </Text>
+                <Input
+                  id="fullName"
+                  name="fullName"
+                  value={formData.fullName}
+                  onChange={(e) => handleChange("fullName", e.target.value)}
+                  required
+                  className="border rounded p-2"
                 />
-              </label>
-              <label>
-                Issued At:
-                <input
+              </Box>
+              <Box>
+                <Text
+                  as="label"
+                  htmlFor="dateOfBirth"
+                  marginBottom="0.5rem"
+                  display="block"
+                >
+                  Date of Birth
+                </Text>
+                <Input
+                  id="dateOfBirth"
+                  name="dateOfBirth"
                   type="date"
-                  name="issuedAt"
-                  value={cert.issuedAt}
-                  onChange={(e) => handleCertificationChange(index, e)}
+                  value={formData.dateOfBirth}
+                  onChange={(e) => handleChange("dateOfBirth", e.target.value)}
                   required
+                  className="border rounded p-2"
                 />
-              </label>
-              <label>
-                Expires At:
-                <input
-                  type="date"
-                  name="expiresAt"
-                  value={cert.expiresAt}
-                  onChange={(e) => handleCertificationChange(index, e)}
-                />
-              </label>
-              <label>
-                Issued By:
-                <input
-                  type="text"
-                  name="issuedBy"
-                  value={cert.issuedBy}
-                  onChange={(e) => handleCertificationChange(index, e)}
+              </Box>
+              <Box>
+                <Text
+                  as="label"
+                  htmlFor="gender"
+                  marginBottom="0.5rem"
+                  display="block"
+                >
+                  Gender
+                </Text>
+                <RadioGroup
+                  id="gender"
+                  name="gender"
+                  value={formData.gender}
+                  onChange={(e) => handleChange("gender", e)}
+                  className="flex space-x-4"
+                >
+                  <Radio value="male">Male</Radio>
+                  <Radio value="female">Female</Radio>
+                  <Radio value="other">Other</Radio>
+                </RadioGroup>
+              </Box>
+              <Box>
+                <Text
+                  as="label"
+                  htmlFor="languages"
+                  marginBottom="0.5rem"
+                  display="block"
+                >
+                  Languages Spoken
+                </Text>
+                <Input
+                  id="languages"
+                  name="languages"
+                  value={formData.languages}
+                  onChange={(e) => handleChange("languages", e.target.value)}
                   required
+                  className="border rounded p-2"
                 />
-              </label>
-            </div>
-          ))}
-          <button
-            type="button"
-            onClick={() =>
-              setFormData((prev) => ({
-                ...prev,
-                certifications: [
-                  ...prev.certifications,
-                  {
-                    name: "",
-                    issuedAt: "",
-                    expiresAt: "",
-                    issuedBy: "",
-                  },
-                ],
-              }))
-            }
-          >
-            Add Certification
-          </button>
-        </div>
-
-        <div className="form-section">
-          <h2>Education</h2>
-          {formData.education.map((edu, index) => (
-            <div key={index} className="sub-section">
-              <label>
-                Institution:
-                <input
-                  type="text"
-                  name="institution"
-                  value={edu.institution}
-                  onChange={(e) => handleEducationChange(index, e)}
+              </Box>
+              <Box>
+                <Text
+                  as="label"
+                  htmlFor="hoursAvailable"
+                  marginBottom="0.5rem"
+                  display="block"
+                >
+                  Hours Available
+                </Text>
+                <Input
+                  id="hoursAvailable"
+                  name="hoursAvailable"
+                  type="number"
+                  onChange={(e) =>
+                    handleChange("hoursAvailable", e.target.value)
+                  }
                   required
+                  className="border rounded p-2"
                 />
-              </label>
-              <label>
-                Degree:
-                <input
-                  type="text"
-                  name="degree"
-                  value={edu.degree}
-                  onChange={(e) => handleEducationChange(index, e)}
+              </Box>
+              <Box>
+                <Text
+                  as="label"
+                  htmlFor="experienceYears"
+                  marginBottom="0.5rem"
+                  display="block"
+                >
+                  Experience (Years)
+                </Text>
+                <Input
+                  id="experienceYears"
+                  name="experienceYears"
+                  type="number"
+                  value={formData.experienceYears}
+                  onChange={(e) =>
+                    handleChange("experienceYears", e.target.value)
+                  }
                   required
+                  className="border rounded p-2"
                 />
-              </label>
-              <label>
-                Field of Study:
-                <input
-                  type="text"
-                  name="fieldOfStudy"
-                  value={edu.fieldOfStudy}
-                  onChange={(e) => handleEducationChange(index, e)}
+              </Box>
+              <Box>
+                <Text
+                  as="label"
+                  htmlFor="specializations"
+                  marginBottom="0.5rem"
+                  display="block"
+                >
+                  Specializations (comma separated)
+                </Text>
+                <Input
+                  id="specializations"
+                  name="specializations"
+                  value={formData.specializations}
+                  onChange={(e) =>
+                    handleChange("specializations", e.target.value)
+                  }
                   required
+                  className="border rounded p-2"
                 />
-              </label>
-              <label>
-                Start Date:
-                <input
-                  type="date"
-                  name="startDate"
-                  value={edu.startDate}
-                  onChange={(e) => handleEducationChange(index, e)}
+              </Box>
+              <Box>
+                <Text
+                  as="label"
+                  htmlFor="heardFrom"
+                  marginBottom="0.5rem"
+                  display="block"
+                >
+                  Heard From
+                </Text>
+                <Input
+                  id="heardFrom"
+                  name="heardFrom"
+                  value={formData.heardFrom}
+                  onChange={(e) => handleChange("heardFrom", e.target.value)}
                   required
+                  className="border rounded p-2"
                 />
-              </label>
-              <label>
-                End Date:
-                <input
-                  type="date"
-                  name="endDate"
-                  value={edu.endDate}
-                  onChange={(e) => handleEducationChange(index, e)}
-                />
-              </label>
-              <label>
-                Grade:
-                <input
-                  type="text"
-                  name="grade"
-                  value={edu.grade}
-                  onChange={(e) => handleEducationChange(index, e)}
-                />
-              </label>
-            </div>
-          ))}
-          <button
-            type="button"
-            onClick={() =>
-              setFormData((prev) => ({
-                ...prev,
-                education: [
-                  ...prev.education,
-                  {
-                    institution: "",
-                    degree: "",
-                    fieldOfStudy: "",
-                    startDate: "",
-                    endDate: "",
-                    grade: "",
-                  },
-                ],
-              }))
-            }
-          >
-            Add Education
-          </button>
-        </div>
-
-        <div className="form-section">
-          <h2>Work Experience</h2>
-          {formData.workExperience.map((exp, index) => (
-            <div key={index} className="sub-section">
-              <label>
-                Company:
-                <input
-                  type="text"
-                  name="company"
-                  value={exp.company}
-                  onChange={(e) => handleWorkExperienceChange(index, e)}
+              </Box>
+              <Box>
+                <Text
+                  as="label"
+                  htmlFor="workingElsewhere"
+                  marginBottom="0.5rem"
+                  display="block"
+                >
+                  Working Elsewhere:
+                </Text>
+                <select
+                  id="workingElsewhere"
+                  name="workingElsewhere"
+                  value={formData.workingElsewhere}
+                  onChange={(e) =>
+                    handleChange("workingElsewhere", e.target.value)
+                  }
                   required
-                />
-              </label>
-              <label>
-                Position:
-                <input
-                  type="text"
-                  name="position"
-                  value={exp.position}
-                  onChange={(e) => handleWorkExperienceChange(index, e)}
+                  className="border rounded p-2"
+                >
+                  <option value="">Select</option>
+                  <option value="yes">Yes</option>
+                  <option value="no">No</option>
+                </select>
+              </Box>
+              <Box>
+                <Text
+                  as="label"
+                  htmlFor="whyJoining"
+                  marginBottom="0.5rem"
+                  display="block"
+                >
+                  Why Joining?
+                </Text>
+                <Textarea
+                  id="whyJoining"
+                  name="whyJoining"
+                  value={formData.whyJoining}
+                  onChange={(e) => handleChange("whyJoining", e.target.value)}
                   required
+                  className="border rounded p-2"
                 />
-              </label>
-              <label>
-                Start Date:
-                <input
-                  type="date"
-                  name="startDate"
-                  value={exp.startDate}
-                  onChange={(e) => handleWorkExperienceChange(index, e)}
+              </Box>
+              <Box>
+                <Text
+                  as="label"
+                  htmlFor="linkedinProfile"
+                  marginBottom="0.5rem"
+                  display="block"
+                >
+                  LinkedIn Profile
+                </Text>
+                <Input
+                  id="linkedinProfile"
+                  name="linkedinProfile"
+                  value={formData.linkedinProfile}
+                  onChange={(e) =>
+                    handleChange("linkedinProfile", e.target.value)
+                  }
                   required
+                  className="border rounded p-2"
                 />
-              </label>
-              <label>
-                End Date:
-                <input
-                  type="date"
-                  name="endDate"
-                  value={exp.endDate}
-                  onChange={(e) => handleWorkExperienceChange(index, e)}
+              </Box>
+              <Box>
+                <Text
+                  as="label"
+                  htmlFor="referredBy"
+                  marginBottom="0.5rem"
+                  display="block"
+                >
+                  Referred By
+                </Text>
+                <Input
+                  id="referredBy"
+                  name="referredBy"
+                  value={formData.referredBy}
+                  onChange={(e) => handleChange("referredBy", e.target.value)}
+                  required
+                  className="border rounded p-2"
                 />
-              </label>
-              <label>
-                Description:
-                <textarea
-                  name="description"
-                  value={exp.description}
-                  onChange={(e) => handleWorkExperienceChange(index, e)}
+              </Box>
+              <Box>
+                <Text
+                  as="label"
+                  htmlFor="longBio"
+                  marginBottom="0.5rem"
+                  display="block"
+                >
+                  Long Bio
+                </Text>
+                <Textarea
+                  id="longBio"
+                  name="longBio"
+                  value={formData.longBio}
+                  onChange={(e) => handleChange("longBio", e.target.value)}
+                  required
+                  className="border rounded p-2"
                 />
-              </label>
-            </div>
-          ))}
-          <button
-            type="button"
-            onClick={() =>
-              setFormData((prev) => ({
-                ...prev,
-                workExperience: [
-                  ...prev.workExperience,
-                  {
-                    company: "",
-                    position: "",
-                    startDate: "",
-                    endDate: "",
-                    description: "",
-                  },
-                ],
-              }))
-            }
-          >
-            Add Work Experience
-          </button>
-        </div>
-
-        <button type="submit">Submit Application</button>
-      </form>
-      <style jsx>{`
-        .form-section {
-          margin-bottom: 20px;
-          padding: 10px;
-          border: 1px solid #ddd;
-          border-radius: 5px;
-        }
-
-        .form-section h2 {
-          margin-top: 0;
-        }
-
-        .sub-section {
-          margin-bottom: 10px;
-        }
-
-        label {
-          display: block;
-          margin-bottom: 10px;
-        }
-
-        input[type="text"],
-        input[type="date"],
-        input[type="number"],
-        select,
-        textarea {
-          width: 100%;
-          padding: 8px;
-          margin-top: 5px;
-          margin-bottom: 10px;
-          border: 1px solid #ddd;
-          border-radius: 4px;
-        }
-
-        button {
-          display: inline-block;
-          padding: 10px 20px;
-          font-size: 16px;
-          color: #fff;
-          background-color: #0070f3;
-          border: none;
-          border-radius: 5px;
-          cursor: pointer;
-        }
-
-        button:hover {
-          background-color: #005bb5;
-        }
-      `}</style>
-    </div>
+              </Box>
+            </Stack>
+          </ShadowBox>
+          <ShadowBox marginBottom="2rem">
+            <Text as="h2" fontSize="xl" fontWeight="bold" marginBottom="1rem">
+              Education
+            </Text>
+            {formData.education.map((education, index) => (
+              <Stack spacing="1rem" key={index}>
+                <Box>
+                  <Text
+                    as="label"
+                    htmlFor={`institution-${index}`}
+                    marginBottom="0.5rem"
+                    display="block"
+                  >
+                    Institution
+                  </Text>
+                  <Input
+                    id={`institution-${index}`}
+                    name={`institution-${index}`}
+                    value={education.institution}
+                    onChange={(e) =>
+                      handleEducationChange(
+                        index,
+                        "institution",
+                        e.target.value
+                      )
+                    }
+                    required
+                    className="border rounded p-2"
+                  />
+                </Box>
+                <Box>
+                  <Text
+                    as="label"
+                    htmlFor={`degree-${index}`}
+                    marginBottom="0.5rem"
+                    display="block"
+                  >
+                    Degree
+                  </Text>
+                  <Input
+                    id={`degree-${index}`}
+                    name={`degree-${index}`}
+                    value={education.degree}
+                    onChange={(e) =>
+                      handleEducationChange(index, "degree", e.target.value)
+                    }
+                    required
+                    className="border rounded p-2"
+                  />
+                </Box>
+                <Box>
+                  <Text
+                    as="label"
+                    htmlFor={`fieldOfStudy-${index}`}
+                    marginBottom="0.5rem"
+                    display="block"
+                  >
+                    Field of Study
+                  </Text>
+                  <Input
+                    id={`fieldOfStudy-${index}`}
+                    name={`fieldOfStudy-${index}`}
+                    value={education.fieldOfStudy}
+                    onChange={(e) =>
+                      handleEducationChange(
+                        index,
+                        "fieldOfStudy",
+                        e.target.value
+                      )
+                    }
+                    required
+                    className="border rounded p-2"
+                  />
+                </Box>
+                <Box>
+                  <Text
+                    as="label"
+                    htmlFor={`startDate-${index}`}
+                    marginBottom="0.5rem"
+                    display="block"
+                  >
+                    Start Date
+                  </Text>
+                  <Input
+                    id={`startDate-${index}`}
+                    name={`startDate-${index}`}
+                    type="date"
+                    value={education.startDate}
+                    onChange={(e) =>
+                      handleEducationChange(index, "startDate", e.target.value)
+                    }
+                    required
+                    className="border rounded p-2"
+                  />
+                </Box>
+                <Box>
+                  <Text
+                    as="label"
+                    htmlFor={`endDate-${index}`}
+                    marginBottom="0.5rem"
+                    display="block"
+                  >
+                    End Date
+                  </Text>
+                  <Input
+                    id={`endDate-${index}`}
+                    name={`endDate-${index}`}
+                    type="date"
+                    value={education.endDate}
+                    onChange={(e) =>
+                      handleEducationChange(index, "endDate", e.target.value)
+                    }
+                    required
+                    className="border rounded p-2"
+                  />
+                </Box>
+                <Box>
+                  <Text
+                    as="label"
+                    htmlFor={`grade-${index}`}
+                    marginBottom="0.5rem"
+                    display="block"
+                  >
+                    Grade
+                  </Text>
+                  <Input
+                    id={`grade-${index}`}
+                    name={`grade-${index}`}
+                    value={education.grade}
+                    onChange={(e) =>
+                      handleEducationChange(index, "grade", e.target.value)
+                    }
+                    required
+                    className="border rounded p-2"
+                  />
+                </Box>
+              </Stack>
+            ))}
+          </ShadowBox>
+          <ShadowBox marginBottom="2rem">
+            <Text as="h2" fontSize="xl" fontWeight="bold" marginBottom="1rem">
+              Work Experience
+            </Text>
+            {formData.workExperience.map((work, index) => (
+              <Stack spacing="1rem" key={index}>
+                <Box>
+                  <Text
+                    as="label"
+                    htmlFor={`company-${index}`}
+                    marginBottom="0.5rem"
+                    display="block"
+                  >
+                    Company
+                  </Text>
+                  <Input
+                    id={`company-${index}`}
+                    name={`company-${index}`}
+                    value={work.company}
+                    onChange={(e) =>
+                      handleWorkExperienceChange(
+                        index,
+                        "company",
+                        e.target.value
+                      )
+                    }
+                    required
+                    className="border rounded p-2"
+                  />
+                </Box>
+                <Box>
+                  <Text
+                    as="label"
+                    htmlFor={`position-${index}`}
+                    marginBottom="0.5rem"
+                    display="block"
+                  >
+                    Position
+                  </Text>
+                  <Input
+                    id={`position-${index}`}
+                    name={`position-${index}`}
+                    value={work.position}
+                    onChange={(e) =>
+                      handleWorkExperienceChange(
+                        index,
+                        "position",
+                        e.target.value
+                      )
+                    }
+                    required
+                    className="border rounded p-2"
+                  />
+                </Box>
+                <Box>
+                  <Text
+                    as="label"
+                    htmlFor={`startDate-${index}`}
+                    marginBottom="0.5rem"
+                    display="block"
+                  >
+                    Start Date
+                  </Text>
+                  <Input
+                    id={`startDate-${index}`}
+                    name={`startDate-${index}`}
+                    type="date"
+                    value={work.startDate}
+                    onChange={(e) =>
+                      handleWorkExperienceChange(
+                        index,
+                        "startDate",
+                        e.target.value
+                      )
+                    }
+                    required
+                    className="border rounded p-2"
+                  />
+                </Box>
+                <Box>
+                  <Text
+                    as="label"
+                    htmlFor={`endDate-${index}`}
+                    marginBottom="0.5rem"
+                    display="block"
+                  >
+                    End Date
+                  </Text>
+                  <Input
+                    id={`endDate-${index}`}
+                    name={`endDate-${index}`}
+                    type="date"
+                    value={work.endDate}
+                    onChange={(e) =>
+                      handleWorkExperienceChange(
+                        index,
+                        "endDate",
+                        e.target.value
+                      )
+                    }
+                    required
+                    className="border rounded p-2"
+                  />
+                </Box>
+                <Box>
+                  <Text
+                    as="label"
+                    htmlFor={`description-${index}`}
+                    marginBottom="0.5rem"
+                    display="block"
+                  >
+                    Description
+                  </Text>
+                  <Textarea
+                    id={`description-${index}`}
+                    name={`description-${index}`}
+                    value={work.description}
+                    onChange={(e) =>
+                      handleWorkExperienceChange(
+                        index,
+                        "description",
+                        e.target.value
+                      )
+                    }
+                    required
+                    className="border rounded p-2"
+                  />
+                </Box>
+              </Stack>
+            ))}
+          </ShadowBox>
+          <ArrowButton type="submit" className="bg-blue-500 text-white">
+            Submit
+          </ArrowButton>
+        </form>
+      </Box>
+    </Container>
   );
 }
 

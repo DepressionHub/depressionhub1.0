@@ -12,18 +12,23 @@ export const authOptions: NextAuthOptions = {
       clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
     }),
   ],
-  secret: process.env.NEXTAUTH_SECRET || "secret",
+  secret: process.env.NEXTAUTH_SECRET,
   callbacks: {
     async jwt({ token, user, account }) {
-      console.log("JWT callback", { token, user, account });
+      console.log("JWT Callback - Token:", token);
+      console.log("JWT Callback - User:", user);
+      console.log("JWT Callback - Account:", account);
+
       if (account && user) {
         token.accessToken = account.access_token;
         token.id = user.id;
       }
       return token;
     },
-    async session({ session, token, user }) {
-      console.log("Session callback", { session, token, user });
+    async session({ session, token }) {
+      console.log("Session Callback - Session:", session);
+      console.log("Session Callback - Token:", token);
+
       if (token) {
         session.accessToken = token.accessToken as string;
         if (session.user) {
@@ -34,7 +39,7 @@ export const authOptions: NextAuthOptions = {
     },
   },
   session: { strategy: "jwt" as SessionStrategy },
-  debug: true, // Enable debug messages
+  debug: true,
 };
 
 export default NextAuth(authOptions);

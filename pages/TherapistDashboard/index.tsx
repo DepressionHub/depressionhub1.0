@@ -5,9 +5,9 @@ import { Therapist, Specialization } from "@prisma/client";
 import { useEffect } from "react";
 import { useRouter } from "next/router";
 
-type TherapistWithSpecializations = Therapist & {
+interface TherapistWithSpecializations extends Therapist {
   specializations: Specialization[];
-};
+}
 
 interface TherapistDashboardProps {
   therapist: TherapistWithSpecializations | null;
@@ -19,12 +19,8 @@ export default function TherapistDashboard({
   const { data: session, status } = useSession();
   const router = useRouter();
 
-  console.log("Session status:", status);
-  console.log("Session data:", session);
-
   useEffect(() => {
     if (status === "unauthenticated") {
-      console.log("Redirecting to sign in...");
       signIn(undefined, { callbackUrl: router.asPath });
     }
   }, [status, router]);
@@ -61,12 +57,14 @@ export const getServerSideProps: GetServerSideProps<
 > = async (context) => {
   const session = await getSession(context);
 
-  console.log("Session in getServerSideProps:", session);
-
   if (!session || !session.user || !session.user.id) {
-    console.log("No session or user ID, returning null therapist");
     return {
-      props: { therapist: null },
+      redirect: {
+        destination:
+          "/api/auth/signin?callbackUrl=" +
+          encodeURIComponent(context.resolvedUrl),
+        permanent: false,
+      },
     };
   }
 
@@ -75,10 +73,7 @@ export const getServerSideProps: GetServerSideProps<
     include: { specializations: true },
   });
 
-  console.log("Therapist found:", therapist ? "Yes" : "No");
-
   if (!therapist) {
-    console.log("No therapist, redirecting to TherapistApply");
     return {
       redirect: {
         destination: "/TherapistApply",

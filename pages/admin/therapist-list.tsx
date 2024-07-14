@@ -3,7 +3,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
-import { useAuth } from "./utils/auth";
+import { useAuth } from "../../admin/utils/auth";
 
 interface Therapist {
   id: string;

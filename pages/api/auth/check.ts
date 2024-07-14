@@ -1,7 +1,7 @@
 // pages/api/auth/check.ts
 
 import { NextApiRequest, NextApiResponse } from "next";
-import { isAuthenticated } from "../../admin/ middleware/auth";
+import { isAuthenticated } from "../../../admin/ middleware/auth";
 
 export default function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method === "GET") {

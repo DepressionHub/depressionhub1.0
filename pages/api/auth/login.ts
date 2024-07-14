@@ -1,14 +1,13 @@
-// pages/api/auth/login.ts
-
 import { NextApiRequest, NextApiResponse } from "next";
+
+const adminUsername = process.env.NEXT_PUBLIC_ADMIN_USERNAME;
+const adminPassword = process.env.NEXT_PUBLIC_ADMIN_PASSWORD;
 
 export default function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method === "POST") {
     const { username, password } = req.body;
 
-    // In a real application, you would check these credentials against a database
-    if (username === "admin" && password === "securepassword") {
-      // Set a secure, HTTP-only cookie
+    if (username === adminUsername && password === adminPassword) {
       res.setHeader(
         "Set-Cookie",
         "session=admin; Path=/; HttpOnly; Secure; SameSite=Strict; Max-Age=3600"

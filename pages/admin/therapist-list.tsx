@@ -1,6 +1,9 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 // pages/admin/therapist-list.tsx
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/router";
+import { useAuth } from "./utils/auth";
 
 interface Therapist {
   id: string;
@@ -24,12 +27,18 @@ interface Therapist {
 }
 
 const AdminTherapistListPage: React.FC = () => {
+  useAuth();
+  const router = useRouter();
   const [therapistsList, setTherapistsList] = useState<Therapist[]>([]);
   const [error, setError] = useState<string | null>(null);
 
   const fetchTherapists = async () => {
     try {
       const response = await fetch("/api/therapists");
+      if (response.status === 401) {
+        router.push("/admin"); // Redirect to login if unauthorized
+        return;
+      }
       if (!response.ok) {
         throw new Error("Failed to fetch therapists");
       }
@@ -46,20 +55,24 @@ const AdminTherapistListPage: React.FC = () => {
     fetchTherapists();
   }, []);
 
-  const toggleVerificationStatus = async (therapistId: string) => {
+  const updateVerificationStatus = async (
+    therapistId: string,
+    isVerified: boolean
+  ) => {
     try {
       const response = await fetch(`/api/therapists/${therapistId}`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
         },
+        body: JSON.stringify({ isVerified }),
       });
       if (!response.ok) {
-        throw new Error("Failed to toggle verification status");
+        throw new Error("Failed to update verification status");
       }
-      await fetchTherapists(); // Refresh therapists list after toggle
+      await fetchTherapists(); // Refresh therapists list after update
     } catch (error) {
-      console.error("Error toggling verification status:", error);
+      console.error("Error updating verification status:", error);
       setError("Failed to update therapist status. Please try again.");
     }
   };
@@ -91,12 +104,28 @@ const AdminTherapistListPage: React.FC = () => {
                   {therapist.isVerified ? "Yes" : "No"}
                 </span>
               </p>
-              <button
-                className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded mt-2"
-                onClick={() => toggleVerificationStatus(therapist.id)}
-              >
-                Toggle Verification
-              </button>
+              <div className="mt-2">
+                <button
+                  className={`mr-2 px-4 py-2 rounded ${
+                    therapist.isVerified
+                      ? "bg-green-500 text-white"
+                      : "bg-gray-300 text-gray-700"
+                  }`}
+                  onClick={() => updateVerificationStatus(therapist.id, true)}
+                >
+                  Verify
+                </button>
+                <button
+                  className={`px-4 py-2 rounded ${
+                    !therapist.isVerified
+                      ? "bg-red-500 text-white"
+                      : "bg-gray-300 text-gray-700"
+                  }`}
+                  onClick={() => updateVerificationStatus(therapist.id, false)}
+                >
+                  Unverify
+                </button>
+              </div>
             </li>
           ))}
         </ul>

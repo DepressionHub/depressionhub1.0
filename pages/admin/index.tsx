@@ -9,12 +9,23 @@ const LoginPage: React.FC = () => {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 
-  const handleLogin = () => {
-    if (username === "admin" && password === "password") {
-      // Replace with secure authentication
-      router.push("/admin/therapist-list");
-    } else {
-      setError("Invalid username or password");
+  const handleLogin = async () => {
+    try {
+      const response = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ username, password }),
+      });
+
+      if (response.ok) {
+        router.push("/admin/therapist-list");
+      } else {
+        setError("Invalid username or password");
+      }
+    } catch (error) {
+      setError("An error occurred. Please try again.");
     }
   };
 

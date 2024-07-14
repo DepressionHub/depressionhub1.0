@@ -26,6 +26,45 @@ interface TherapistApplyProps {
   therapist: SerializedTherapist | null;
 }
 
+interface FormData {
+  type: TherapistType;
+  fullName: string;
+  dateOfBirth: string;
+  gender: string;
+  currentLocation: string;
+  languages: string;
+  hoursAvailable: string;
+  experienceYears: string;
+  specializations: string;
+  heardFrom: string;
+  workingElsewhere: boolean;
+  whyJoining: string;
+  linkedinProfile: string;
+  referredBy: string;
+  longBio: string;
+  certifications: Array<{
+    name: string;
+    issuedAt: string;
+    expiresAt: string;
+    issuedBy: string;
+  }>;
+  education: Array<{
+    institution: string;
+    degree: string;
+    fieldOfStudy: string;
+    startDate: string;
+    endDate: string;
+    grade: string;
+  }>;
+  workExperience: Array<{
+    company: string;
+    position: string;
+    startDate: string;
+    endDate: string;
+    description: string;
+  }>;
+}
+
 const ProgressIndicator = ({ currentStep }: { currentStep: number }) => {
   const steps = [
     "Personal Details",
@@ -59,7 +98,7 @@ export default function TherapistApply({ therapist }: TherapistApplyProps) {
   const router = useRouter();
   const [currentStep, setCurrentStep] = useState(1);
   const [error, setError] = useState<string | null>(null);
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<FormData>({
     type: TherapistType.PROFESSIONAL,
     fullName: "",
     dateOfBirth: "",
@@ -110,41 +149,41 @@ export default function TherapistApply({ therapist }: TherapistApplyProps) {
     }
   }, [status, router]);
 
-  const handleChange = (name: string, value: string | boolean) => {
+  const handleChange = (name: keyof FormData, value: string | boolean) => {
     setFormData((prev) => ({
       ...prev,
       [name]: value,
     }));
   };
 
-  const handleArrayChange = (
-    arrayName: string,
+  const handleArrayChange = <T extends keyof FormData>(
+    arrayName: T,
     index: number,
     name: string,
     value: string
   ) => {
     setFormData((prev) => ({
       ...prev,
-      [arrayName]: (prev[arrayName as keyof typeof prev] as any[]).map(
-        (item: any, i: number) =>
-          i === index ? { ...item, [name]: value } : item
+      [arrayName]: (prev[arrayName] as any[]).map((item, i) =>
+        i === index ? { ...item, [name]: value } : item
       ),
     }));
   };
 
-  const addArrayItem = (arrayName: string) => {
+  const addArrayItem = <T extends keyof FormData>(arrayName: T) => {
     setFormData((prev) => ({
       ...prev,
-      [arrayName]: [...(prev[arrayName as keyof typeof prev] || []), {}],
+      [arrayName]: [...(prev[arrayName] as any[]), {}],
     }));
   };
 
-  const removeArrayItem = (arrayName: string, index: number) => {
+  const removeArrayItem = <T extends keyof FormData>(
+    arrayName: T,
+    index: number
+  ) => {
     setFormData((prev) => ({
       ...prev,
-      [arrayName]: Array.isArray(prev[arrayName])
-        ? prev[arrayName]?.filter((_: any, i: number) => i !== index)
-        : [],
+      [arrayName]: (prev[arrayName] as any[]).filter((_, i) => i !== index),
     }));
   };
 
@@ -228,9 +267,7 @@ export default function TherapistApply({ therapist }: TherapistApplyProps) {
             role="alert"
           >
             <strong className="font-bold">Error: </strong>
-            <span className="block sm:inline">
-              {"yo! u missed somthing check again"}
-            </span>
+            <span className="block sm:inline">{error}</span>
           </Box>
         )}
         <form onSubmit={handleSubmit} className="space-y-8">
@@ -260,7 +297,9 @@ export default function TherapistApply({ therapist }: TherapistApplyProps) {
                       id="type"
                       name="type"
                       value={formData.type}
-                      onChange={(e) => handleChange("type", e.target.value)}
+                      onChange={(e) =>
+                        handleChange("type", e.target.value as TherapistType)
+                      }
                       required
                       className="border rounded-md p-2 w-full focus:ring-2 focus:ring-blue-500"
                     >
@@ -325,7 +364,7 @@ export default function TherapistApply({ therapist }: TherapistApplyProps) {
                       id="gender"
                       name="gender"
                       value={formData.gender}
-                      onChange={(e) => handleChange("gender", e)}
+                      onChange={(value) => handleChange("gender", value)}
                       className="flex space-x-4"
                     >
                       <Radio value="male">Male</Radio>
@@ -728,8 +767,8 @@ export default function TherapistApply({ therapist }: TherapistApplyProps) {
                       id="workingElsewhere"
                       name="workingElsewhere"
                       value={formData.workingElsewhere.toString()}
-                      onChange={(e) =>
-                        handleChange("workingElsewhere", e === "true")
+                      onChange={(value) =>
+                        handleChange("workingElsewhere", value === "true")
                       }
                       className="flex space-x-4"
                     >
@@ -816,47 +855,6 @@ export default function TherapistApply({ therapist }: TherapistApplyProps) {
                       required
                       className="border rounded-md p-2 w-full focus:ring-2 focus:ring-blue-500"
                     />
-                  </Box>
-                  <Box>
-                    {/* <Text as="h3" fontSize="xl" fontWeight="bold" marginBottom="1rem">
-                    Certifications
-                  </Text> */}
-                    {/* {formData.certifications.map((cert, index) => (
-                    <Box key={index} className="mb-4 p-4 border rounded">
-                      <Input
-                        placeholder="Certification Name"
-                        value={cert.name}
-                        onChange={(e) => handleArrayChange("certifications", index, "name", e.target.value)}
-                        className="mb-2 w-full"
-                      /> */}
-                    {/* <Input
-                        type="date"
-                        placeholder="Issued At"
-                        value={cert.issuedAt}
-                        onChange={(e) => handleArrayChange("certifications", index, "issuedAt", e.target.value)}
-                        className="mb-2 w-full"
-                      /> */}
-                    {/* <Input
-                        type="date"
-                        placeholder="Expires At"
-                        value={cert.expiresAt}
-                        onChange={(e) => handleArrayChange("certifications", index, "expiresAt", e.target.value)}
-                        className="mb-2 w-full"
-                      /> */}
-                    {/* <Input
-                        placeholder="Issued By"
-                        value={cert.issuedBy}
-                        onChange={(e) => handleArrayChange("certifications", index, "issuedBy", e.target.value)}
-                        className="mb-2 w-full"
-                      /> */}
-                    {/* <button type="button" onClick={() => removeArrayItem("certifications", index)} className="text-red-500">
-                        Remove
-                      </button> */}
-                    {/* </Box>
-                  ))}
-                  <button type="button" onClick={() => addArrayItem("certifications")} className="text-blue-500">
-                    Add Certification
-                  </button> */}
                   </Box>
                 </Stack>
               </ShadowBox>

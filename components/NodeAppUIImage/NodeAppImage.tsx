@@ -5,12 +5,12 @@ export function NodeAppUIImage(props: FlexProps) {
   const imageProps = useBreakpointValue(
     {
       base: {
-        src: "/images/shared/node-app-ui/node-app-ui-base.svg",
+        src: "/images/shared/node-app-ui/node-app-ui-xl.svg",
         width: 382,
         height: 216,
       },
       sm: {
-        src: "/images/shared/node-app-ui/node-app-ui-md.svg",
+        src: "/images/shared/node-app-ui/node-app-ui-xl.svg",
         width: 832,
         height: 471,
       },

@@ -9,6 +9,7 @@ const nextConfig = {
       'humanists.international',
       'www.mentalwellnesscentre.com',
       'yt3.googleusercontent.com',
+      'picsum.photos',
     ],
   },
   reactStrictMode: true,

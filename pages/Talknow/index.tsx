@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { FaPhoneAlt, FaComments, FaInfoCircle } from "react-icons/fa";
 import { Box, Container, Text, Grid, GridItem, ShadowBox } from "@/lib/ui";
 import Image from "next/image";
+import { MdVerified } from "react-icons/md";
 
 interface Therapist {
   id: string;
@@ -48,20 +49,32 @@ const ChatNow = () => {
     return <div>{error}</div>;
   }
 
+  console.log(therapists);
+
   return (
     <Box minH="100vh" bg="gray.100" py={10} px={4}>
-      <div style={{ textAlign: "center", marginBottom: "3rem" }}>
-        <h1
-          style={{
-            background: "linear-gradient(to right, #0057D9, #007BFF, #0057D9)",
-            padding: "20px",
-            borderRadius: "8px",
-            color: "#FFF",
-          }}
+      <div style={{ textAlign: "center", marginBottom: "-2rem" }}>
+        <Text
+          textStyle="h3"
+          display="flex"
+          alignItems="center"
+          justifyContent="center"
         >
-          Connect with Our Verified Therapists
-        </h1>
-        <p style={{ fontSize: "1.25rem", color: "gray" }}>
+          Connect with Our{" "}
+          <div
+            className="badge badge-lg badge-primary"
+            style={{
+              display: "flex",
+              marginInline: "1rem",
+              alignItems: "center",
+              gap: "0.5rem",
+            }}
+          >
+            Verified <MdVerified />
+          </div>{" "}
+          Therapists
+        </Text>
+        <p style={{ fontSize: "1.25rem", color: "gray", marginTop: "1rem" }}>
           Experience high-quality, tailored therapy sessions with our verified
           professionals.
         </p>
@@ -90,63 +103,111 @@ const ChatNow = () => {
         >
           {therapists.map((therapist) => (
             <GridItem key={therapist.id} display="flex">
-              <ShadowBox shadowColor="green.400" p={6} borderRadius="md">
-                {therapist.imageUrl && (
+              <ShadowBox
+                shadowColor="green.400"
+                p={6}
+                borderRadius="md"
+                display="flex"
+                flexDirection="column"
+              >
+                <div
+                  className="flex"
+                  style={{ alignItems: "center", gap: "1rem" }}
+                >
                   <Image
-                    src={therapist.imageUrl}
+                    src={
+                      therapist.imageUrl
+                        ? therapist.imageUrl
+                        : `https://picsum.photos/seed/${therapist.id}/200/200`
+                    }
                     alt={therapist.fullName}
                     width={100}
                     height={100}
                     className="rounded-full mb-4"
+                    style={{
+                      border: "1px solid #000",
+                      boxShadow: "2px 3px 0px black",
+                    }}
                   />
-                )}
-                <Text textStyle="h3" marginBottom={1}>
-                  {therapist.fullName}
+                  <Text
+                    textStyle="h3"
+                    marginBottom={1}
+                    fontSize="lg"
+                    display="flex"
+                    alignItems="center"
+                    gap="0.5rem"
+                  >
+                    {therapist.fullName}
+                    <button
+                      onClick={() =>
+                        alert(`More info about ${therapist.fullName}`)
+                      }
+                      style={{
+                        backgroundColor: "transparent",
+                        color: "#000",
+                        fontWeight: "light",
+                        fontSize: "1.1rem",
+                        borderRadius: "0.5rem",
+                        transition: "background-color 0.3s",
+                        display: "flex",
+                        alignItems: "center",
+                      }}
+                    >
+                      <FaInfoCircle />
+                    </button>
+                  </Text>
+                </div>
+                <Text textStyle="h6" className="badge badge-secondary">
+                  {therapist.type}
                 </Text>
-                <Text textStyle="h4">{therapist.type}</Text>
                 <Text textStyle="body2" marginTop={2}>
-                  Specializations:{" "}
                   {therapist.specializations
                     .map((spec) => spec.name)
                     .join(", ")}
                 </Text>
-                <Text textStyle="body1" marginTop={2}>
-                  {therapist.longBio.substring(0, 150)}...
+                <Text textStyle="body1" marginBlock={2}>
+                  {therapist.longBio.substring(0, 120)}...
                 </Text>
-                <Box display="flex" mt={4} justifyContent="space-between">
+                <Box display="flex" mt="auto" gap="1rem">
                   <button
                     onClick={() =>
                       alert(`Initiating call with ${therapist.fullName}`)
                     }
                     style={{
-                      backgroundColor: "blue",
-                      color: "white",
+                      height: "3rem",
+                      width: "3rem",
+                      backgroundColor: "#df77f3",
+                      color: "black",
                       fontWeight: "bold",
                       padding: "0.5rem 1rem",
-                      borderRadius: "0.5rem",
                       transition: "background-color 0.3s",
                       display: "flex",
                       alignItems: "center",
+                      borderRadius: "50%",
+                      boxShadow: "2px 3px 0px black",
                     }}
                   >
-                    <FaPhoneAlt style={{ marginRight: "0.5rem" }} /> Call
+                    <FaPhoneAlt />
                   </button>
                   <button
                     onClick={() =>
                       alert(`Initiating chat with ${therapist.fullName}`)
                     }
                     style={{
-                      backgroundColor: "green",
-                      color: "white",
+                      height: "3rem",
+                      width: "3rem",
+                      backgroundColor: "#df77f3",
+                      color: "black",
                       fontWeight: "bold",
                       padding: "0.5rem 1rem",
-                      borderRadius: "0.5rem",
                       transition: "background-color 0.3s",
                       display: "flex",
                       alignItems: "center",
+                      borderRadius: "50%",
+                      boxShadow: "2px 3px 0px black",
                     }}
                   >
-                    <FaComments style={{ marginRight: "0.5rem" }} /> Chat
+                    <FaComments />
                   </button>
                   <button
                     onClick={() =>
@@ -159,11 +220,11 @@ const ChatNow = () => {
                       padding: "0.5rem 1rem",
                       borderRadius: "0.5rem",
                       transition: "background-color 0.3s",
-                      display: "flex",
+                      display: "none",
                       alignItems: "center",
                     }}
                   >
-                    <FaInfoCircle style={{ marginRight: "0.5rem" }} /> Info
+                    <FaInfoCircle /> Info
                   </button>
                 </Box>
               </ShadowBox>

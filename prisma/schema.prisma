@@ -7,7 +7,6 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-
 // User Authentication (leveraging NextAuth)
 model User {
   id            String    @id @default(cuid())
@@ -18,6 +17,7 @@ model User {
   accounts      Account[]
   sessions      Session[]
   therapist     Therapist?
+  sessionRequests TherapySessionRequest[] 
 }
 
 model Account {
@@ -79,11 +79,47 @@ model Therapist {
   certifications    Certification[]
   education         Education[]
   workExperience    WorkExperience[]
+  sessionRequests   TherapySessionRequest[]
+}
+
+model TherapySessionRequest {
+  id          String   @id @default(uuid())
+  therapistId String
+  therapist   Therapist @relation(fields: [therapistId], references: [id])
+  status      String
+  requestedAt DateTime @default(now())
+  // Add other necessary fields
+  payment     Payment?
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+}
+
+enum SessionRequestStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
+  RESCHEDULED
 }
 
 enum TherapistType {
   PROFESSIONAL
   STUDENT
+}
+
+model Payment {
+  id               String   @id @default(cuid())
+  sessionRequestId String   @unique
+  sessionRequest   TherapySessionRequest @relation(fields: [sessionRequestId], references: [id])
+  amount           Float
+  status           PaymentStatus
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+}
+
+enum PaymentStatus {
+  PENDING
+  COMPLETED
+  FAILED
 }
 
 model Specialization {

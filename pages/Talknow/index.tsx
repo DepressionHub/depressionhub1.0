@@ -55,24 +55,24 @@ const ChatNow = () => {
     <Box minH="100vh" bg="gray.100" py={10} px={4}>
       <div style={{ textAlign: "center", marginBottom: "-2rem" }}>
         <Text
-          textStyle="h3"
+          fontSize="lg"
           display="flex"
-          alignItems="center"
+          align="center"
           justifyContent="center"
+          flexWrap="wrap"
         >
-          Connect with Our{" "}
-          <div
-            className="badge badge-lg badge-primary"
+          <span> Connect with Our </span>{" "}
+          <span
             style={{
               display: "flex",
-              marginInline: "1rem",
               alignItems: "center",
-              gap: "0.5rem",
+              marginInline: "0.4rem",
             }}
           >
+            {" "}
             Verified <MdVerified />
-          </div>{" "}
-          Therapists
+          </span>{" "}
+          <span> Therapists</span>
         </Text>
         <p style={{ fontSize: "1.25rem", color: "gray", marginTop: "1rem" }}>
           Experience high-quality, tailored therapy sessions with our verified
@@ -134,32 +134,38 @@ const ChatNow = () => {
                     marginBottom={1}
                     fontSize="lg"
                     display="flex"
-                    alignItems="center"
+                    flexDirection="column"
                     gap="0.5rem"
                   >
-                    {therapist.fullName}
-                    <button
-                      onClick={() =>
-                        alert(`More info about ${therapist.fullName}`)
-                      }
-                      style={{
-                        backgroundColor: "transparent",
-                        color: "#000",
-                        fontWeight: "light",
-                        fontSize: "1.1rem",
-                        borderRadius: "0.5rem",
-                        transition: "background-color 0.3s",
-                        display: "flex",
-                        alignItems: "center",
-                      }}
+                    <Box display="flex" alignItems="center" gap="1rem">
+                      {therapist.fullName}
+                      <button
+                        onClick={() =>
+                          alert(`More info about ${therapist.fullName}`)
+                        }
+                        style={{
+                          backgroundColor: "transparent",
+                          color: "#000",
+                          fontWeight: "light",
+                          fontSize: "1.1rem",
+                          borderRadius: "0.5rem",
+                          transition: "background-color 0.3s",
+                          display: "flex",
+                          alignItems: "center",
+                        }}
+                      >
+                        <FaInfoCircle />
+                      </button>
+                    </Box>
+
+                    <Text
+                      textStyle="h6"
+                      className="badge badge-sm badge-secondary"
                     >
-                      <FaInfoCircle />
-                    </button>
+                      {therapist.type}
+                    </Text>
                   </Text>
                 </div>
-                <Text textStyle="h6" className="badge badge-secondary">
-                  {therapist.type}
-                </Text>
                 <Text textStyle="body2" marginTop={2}>
                   {therapist.specializations
                     .map((spec) => spec.name)

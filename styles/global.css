@@ -73,13 +73,19 @@ table th {
 }
 
 .badge.badge-secondary{
-  background: #fff;
+  background: #0000003a;
   color: #000;
+  border: none !important;
+  box-shadow: none;
 }
 
 .badge.badge-lg{
   font-size: 0.8em;
   font-weight: normal;
+}
+
+.badge.badge-sm{
+  scale: 0.8;
 }
 
 /* Badges */

@@ -4,6 +4,7 @@ import prisma from "@/db/db";
 import { Therapist, TherapistType } from "@prisma/client";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
+import Select from "react-select";
 import {
   ArrowButton,
   Box,
@@ -15,8 +16,10 @@ import {
   Stack,
   Text,
   Textarea,
-  Select,
+  Select as CustomSelect,
 } from "@/lib/ui";
+import CustomInput from "@/lib/ui/src/components/FormElements/CustomInput";
+import CustomTextArea from "@/lib/ui/src/components/FormElements/CustomTextArea";
 
 interface SerializedTherapist extends Omit<Therapist, "dateOfBirth"> {
   dateOfBirth: string | null;
@@ -32,10 +35,10 @@ interface FormData {
   dateOfBirth: string;
   gender: string;
   currentLocation: string;
-  languages: string;
+  languages: { value: string; label: string }[];
   hoursAvailable: string;
   experienceYears: string;
-  specializations: string;
+  specializations: { value: string; label: string }[];
   heardFrom: string;
   workingElsewhere: boolean;
   whyJoining: string;
@@ -104,10 +107,10 @@ export default function TherapistApply({ therapist }: TherapistApplyProps) {
     dateOfBirth: "",
     gender: "",
     currentLocation: "",
-    languages: "",
+    languages: [],
     hoursAvailable: "",
     experienceYears: "",
-    specializations: "",
+    specializations: [],
     heardFrom: "",
     workingElsewhere: false,
     whyJoining: "",
@@ -143,11 +146,65 @@ export default function TherapistApply({ therapist }: TherapistApplyProps) {
     ],
   });
 
+  console.log(formData);
+
+  const languageOptions = [
+    { value: "english", label: "English" },
+    { value: "spanish", label: "Spanish" },
+    { value: "french", label: "French" },
+    { value: "german", label: "German" },
+    { value: "mandarin", label: "Mandarin" },
+    { value: "hindi", label: "Hindi" },
+    { value: "arabic", label: "Arabic" },
+  ];
+
+  const specializationOptions = [
+    { value: "anxiety", label: "Anxiety" },
+    { value: "depression", label: "Depression" },
+    { value: "relationship", label: "Relationship Issues" },
+    { value: "stress", label: "Stress Management" },
+    { value: "trauma", label: "Trauma" },
+  ];
+
   useEffect(() => {
     if (status === "unauthenticated") {
       router.push("/");
     }
   }, [status, router]);
+
+  useEffect(() => {
+    const getUserLocation = () => {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            const { latitude, longitude } = position.coords;
+            fetch(
+              `https://api.opencagedata.com/geocode/v1/json?q=${latitude}+${longitude}&key=4024519736054edd922fe747a4c115c1`
+            )
+              .then((response) => response.json())
+              .then((data) => {
+                console.log(data);
+                const location = `${data.results[0].components.suburb}, ${data.results[0].components.state_district}, ${data.results[0].components.state}, ${data.results[0].components.country}`;
+                setFormData((prev) => ({
+                  ...prev,
+                  currentLocation: location,
+                }));
+              })
+              .catch((error) => {
+                console.error("Error retrieving location:", error);
+              });
+          },
+          (error) => {
+            console.error("Error getting location:", error);
+          }
+        );
+      } else {
+        console.error("Geolocation is not supported by this browser.");
+      }
+    };
+
+    getUserLocation();
+  }, []);
 
   const handleChange = (name: keyof FormData, value: string | boolean) => {
     setFormData((prev) => ({
@@ -171,10 +228,23 @@ export default function TherapistApply({ therapist }: TherapistApplyProps) {
   };
 
   const addArrayItem = <T extends keyof FormData>(arrayName: T) => {
-    setFormData((prev) => ({
-      ...prev,
-      [arrayName]: [...(prev[arrayName] as any[]), {}],
-    }));
+    setFormData((prev) => {
+      const array = prev[arrayName] as any[];
+
+      const lastItem = array[array.length - 1];
+      const isLastItemComplete = Object.values(lastItem).every(
+        (value) => value !== "" && value !== undefined && value !== null
+      );
+
+      if (!isLastItemComplete) {
+        return prev;
+      }
+
+      return {
+        ...prev,
+        [arrayName]: [...array, {}],
+      };
+    });
   };
 
   const removeArrayItem = <T extends keyof FormData>(
@@ -190,6 +260,22 @@ export default function TherapistApply({ therapist }: TherapistApplyProps) {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError(null);
+
+    const isEmpty = (value: any) => {
+      if (Array.isArray(value)) {
+        return value.length === 0;
+      }
+      if (typeof value === "object" && value !== null) {
+        return Object.values(value).some(isEmpty);
+      }
+      return !value;
+    };
+    const hasEmptyField = Object.values(formData).some(isEmpty);
+
+    if (hasEmptyField) {
+      setError("Please fill in all required fields.");
+      return;
+    }
 
     try {
       const response = await fetch("/api/therapists/register", {
@@ -293,62 +379,55 @@ export default function TherapistApply({ therapist }: TherapistApplyProps) {
                     >
                       Therapist Type
                     </Text>
-                    <Select
+                    <CustomSelect
                       id="type"
                       name="type"
                       value={formData.type}
                       onChange={(e) =>
                         handleChange("type", e.target.value as TherapistType)
                       }
+                      className="border rounded-md p-2 w-full"
+                      aria-required="true"
                       required
-                      className="border rounded-md p-2 w-full focus:ring-2 focus:ring-blue-500"
                     >
                       <option value={TherapistType.PROFESSIONAL}>
                         Professional
                       </option>
                       <option value={TherapistType.STUDENT}>Student</option>
-                    </Select>
+                    </CustomSelect>
                   </Box>
                   <Box>
-                    <Text
-                      as="label"
-                      htmlFor="fullName"
-                      marginBottom="0.5rem"
-                      display="block"
-                      className="font-medium"
-                    >
-                      Full Name
-                    </Text>
-                    <Input
-                      id="fullName"
-                      name="fullName"
-                      value={formData.fullName}
-                      onChange={(e) => handleChange("fullName", e.target.value)}
-                      required
-                      className="border rounded-md p-2 w-full focus:ring-2 focus:ring-blue-500"
-                    />
+                    <Box>
+                      <CustomInput
+                        id="fullName"
+                        name="fullName"
+                        label="Full Name"
+                        value={formData.fullName}
+                        onChange={(e) =>
+                          handleChange("fullName", e.target.value)
+                        }
+                        placeholder="E.g. : John Doe"
+                        aria-required="true"
+                        required
+                      />
+                    </Box>
                   </Box>
                   <Box>
-                    <Text
-                      as="label"
-                      htmlFor="dateOfBirth"
-                      marginBottom="0.5rem"
-                      display="block"
-                      className="font-medium"
-                    >
-                      Date of Birth
-                    </Text>
-                    <Input
-                      id="dateOfBirth"
-                      name="dateOfBirth"
-                      type="date"
-                      value={formData.dateOfBirth}
-                      onChange={(e) =>
-                        handleChange("dateOfBirth", e.target.value)
-                      }
-                      required
-                      className="border rounded-md p-2 w-full focus:ring-2 focus:ring-blue-500"
-                    />
+                    <Box>
+                      <CustomInput
+                        type="date"
+                        id="dateOfBirth"
+                        name="dateOfBirth"
+                        label="Date Of Birth"
+                        value={formData.dateOfBirth}
+                        onChange={(e) =>
+                          handleChange("dateOfBirth", e.target.value)
+                        }
+                        placeholder="E.g. : 22-12-1987"
+                        aria-required="true"
+                        required
+                      />
+                    </Box>
                   </Box>
                   <Box>
                     <Text
@@ -373,24 +452,18 @@ export default function TherapistApply({ therapist }: TherapistApplyProps) {
                     </RadioGroup>
                   </Box>
                   <Box>
-                    <Text
-                      as="label"
-                      htmlFor="currentLocation"
-                      marginBottom="0.5rem"
-                      display="block"
-                      className="font-medium"
-                    >
-                      Current Location
-                    </Text>
-                    <Input
+                    <CustomInput
+                      type="text"
                       id="currentLocation"
                       name="currentLocation"
+                      label="Current Location"
                       value={formData.currentLocation}
                       onChange={(e) =>
                         handleChange("currentLocation", e.target.value)
                       }
+                      placeholder="E.g. : Pune, Maharashtra"
+                      aria-required="true"
                       required
-                      className="border rounded-md p-2 w-full focus:ring-2 focus:ring-blue-500"
                     />
                   </Box>
                 </Stack>
@@ -416,62 +489,59 @@ export default function TherapistApply({ therapist }: TherapistApplyProps) {
                       display="block"
                       className="font-medium"
                     >
-                      Languages Spoken (comma-separated)
+                      Languages Spoken
                     </Text>
-                    <Input
+                    <Select
                       id="languages"
                       name="languages"
-                      value={formData.languages}
-                      onChange={(e) =>
-                        handleChange("languages", e.target.value)
-                      }
+                      isMulti
+                      options={languageOptions}
+                      placeholder="E.g. English, Hindi"
+                      value={formData.languages.map((lang) => ({
+                        value: lang,
+                        label: lang,
+                      }))}
+                      onChange={(selectedOptions) => {
+                        const selectedLanguages = selectedOptions.map(
+                          (option) => option.value
+                        );
+                        handleChange("languages", selectedLanguages);
+                      }}
+                      className="basic-multi-select"
+                      classNamePrefix="select"
+                      aria-required="true"
                       required
-                      className="border rounded-md p-2 w-full focus:ring-2 focus:ring-blue-500"
                     />
                   </Box>
                   <Box>
-                    <Text
-                      as="label"
-                      htmlFor="hoursAvailable"
-                      marginBottom="0.5rem"
-                      display="block"
-                      className="font-medium"
-                    >
-                      Hours Available per Week
-                    </Text>
-                    <Input
+                    <CustomInput
+                      type="number"
                       id="hoursAvailable"
                       name="hoursAvailable"
-                      type="number"
+                      label="Hours Available per Week"
                       value={formData.hoursAvailable}
                       onChange={(e) =>
                         handleChange("hoursAvailable", e.target.value)
                       }
+                      placeholder="E.g. : 7 hours"
+                      aria-required="true"
                       required
-                      className="border rounded-md p-2 w-full focus:ring-2 focus:ring-blue-500"
                     />
                   </Box>
                   <Box>
-                    <Text
-                      as="label"
-                      htmlFor="experienceYears"
-                      marginBottom="0.5rem"
-                      display="block"
-                      className="font-medium"
-                    >
-                      Years of Experience
-                    </Text>
-                    <Input
+                    <CustomInput
+                      type="number"
                       id="experienceYears"
                       name="experienceYears"
-                      type="number"
-                      step="0.1"
+                      label="Years of Experience"
                       value={formData.experienceYears}
+                      step="0.1"
                       onChange={(e) =>
                         handleChange("experienceYears", e.target.value)
                       }
+                      placeholder="E.g. : 2.5 Years"
+                      aria-required="true"
                       required
-                      className="border rounded-md p-2 w-full focus:ring-2 focus:ring-blue-500"
                     />
                   </Box>
                   <Box>
@@ -482,17 +552,20 @@ export default function TherapistApply({ therapist }: TherapistApplyProps) {
                       display="block"
                       className="font-medium"
                     >
-                      Specializations (comma-separated)
+                      Specializations
                     </Text>
-                    <Input
+                    <Select
                       id="specializations"
                       name="specializations"
+                      isMulti
+                      options={specializationOptions}
                       value={formData.specializations}
-                      onChange={(e) =>
-                        handleChange("specializations", e.target.value)
-                      }
-                      required
-                      className="border rounded-md p-2 w-full focus:ring-2 focus:ring-blue-500"
+                      onChange={(selectedOptions) => {
+                        handleChange("specializations", selectedOptions || []);
+                      }}
+                      placeholder="E.g. Relationship Issues"
+                      className="basic-multi-select"
+                      classNamePrefix="select"
                     />
                   </Box>
                 </Stack>
@@ -520,9 +593,20 @@ export default function TherapistApply({ therapist }: TherapistApplyProps) {
                       Education
                     </Text>
                     {formData.education.map((edu, index) => (
-                      <Box key={index} className="mb-4 p-4 border rounded">
-                        <Input
-                          placeholder="Institution"
+                      <Box
+                        key={index}
+                        className="mb-4"
+                        style={{
+                          display: "flex",
+                          flexDirection: "column",
+                          gap: "0.8rem",
+                        }}
+                      >
+                        <CustomInput
+                          type="text"
+                          id={`education-institution-${index}`}
+                          name="institution"
+                          label="Institution"
                           value={edu.institution}
                           onChange={(e) =>
                             handleArrayChange(
@@ -532,66 +616,95 @@ export default function TherapistApply({ therapist }: TherapistApplyProps) {
                               e.target.value
                             )
                           }
-                          className="mb-2 w-full"
+                          placeholder="For e.g. University Name"
+                          aria-required="true"
+                          required
                         />
-                        <Input
-                          placeholder="Degree"
-                          value={edu.degree}
-                          onChange={(e) =>
-                            handleArrayChange(
-                              "education",
-                              index,
-                              "degree",
-                              e.target.value
-                            )
-                          }
-                          className="mb-2 w-full"
-                        />
-                        <Input
-                          placeholder="Field of Study"
-                          value={edu.fieldOfStudy}
-                          onChange={(e) =>
-                            handleArrayChange(
-                              "education",
-                              index,
-                              "fieldOfStudy",
-                              e.target.value
-                            )
-                          }
-                          className="mb-2 w-full"
-                        />
-                        <Input
-                          type="date"
-                          placeholder="Start Date"
-                          value={edu.startDate}
-                          onChange={(e) =>
-                            handleArrayChange(
-                              "education",
-                              index,
-                              "startDate",
-                              e.target.value
-                            )
-                          }
-                          className="mb-2 w-full"
-                        />
-                        <Input
-                          type="date"
-                          placeholder="End Date"
-                          value={edu.endDate}
-                          onChange={(e) =>
-                            handleArrayChange(
-                              "education",
-                              index,
-                              "endDate",
-                              e.target.value
-                            )
-                          }
-                          className="mb-2 w-full"
-                        />
-                        <Input
-                          type="number"
-                          step="0.1"
-                          placeholder="Grade"
+                        <Box style={{ display: "flex", gap: "1rem" }}>
+                          <CustomInput
+                            type="text"
+                            id={`education-degree-${index}`}
+                            name="degree"
+                            label="Degree"
+                            value={edu.degree}
+                            style={{ width: "100%" }}
+                            onChange={(e) =>
+                              handleArrayChange(
+                                "education",
+                                index,
+                                "degree",
+                                e.target.value
+                              )
+                            }
+                            placeholder="For e.g. Bachelor's"
+                            aria-required="true"
+                            required
+                          />
+                          <CustomInput
+                            type="text"
+                            id={`education-fieldOfStudy-${index}`}
+                            name="fieldOfStudy"
+                            label="Field of Study"
+                            value={edu.fieldOfStudy}
+                            style={{ width: "100%" }}
+                            onChange={(e) =>
+                              handleArrayChange(
+                                "education",
+                                index,
+                                "fieldOfStudy",
+                                e.target.value
+                              )
+                            }
+                            placeholder="For e.g. Computer Science"
+                            aria-required="true"
+                            required
+                          />
+                        </Box>
+                        <Box style={{ display: "flex", gap: "1rem" }}>
+                          <CustomInput
+                            type="date"
+                            id={`education-startDate-${index}`}
+                            name="startDate"
+                            label="Start Date"
+                            value={edu.startDate}
+                            style={{ width: "100%" }}
+                            onChange={(e) =>
+                              handleArrayChange(
+                                "education",
+                                index,
+                                "startDate",
+                                e.target.value
+                              )
+                            }
+                            placeholder="For e.g. YYYY-MM-DD"
+                            aria-required="true"
+                            required
+                          />
+                          <CustomInput
+                            type="date"
+                            id={`education-endDate-${index}`}
+                            name="endDate"
+                            label="End Date"
+                            value={edu.endDate}
+                            style={{ width: "100%" }}
+                            onChange={(e) =>
+                              handleArrayChange(
+                                "education",
+                                index,
+                                "endDate",
+                                e.target.value
+                              )
+                            }
+                            placeholder="For e.g. YYYY-MM-DD"
+                            aria-required="true"
+                            required
+                          />
+                        </Box>
+                        <CustomInput
+                          type="text"
+                          id={`education-grade-${index}`}
+                          name="grade"
+                          label="Grade"
                           value={edu.grade}
                           onChange={(e) =>
                             handleArrayChange(
@@ -601,14 +714,16 @@ export default function TherapistApply({ therapist }: TherapistApplyProps) {
                               e.target.value
                             )
                           }
-                          className="mb-2 w-full"
+                          placeholder="For e.g. A"
+                          aria-required="true"
+                          required
                         />
                         <button
                           type="button"
                           onClick={() => removeArrayItem("education", index)}
-                          className="text-red-500"
+                          className="text-red-500 mt-2"
                         >
-                          Remove
+                          Remove Education
                         </button>
                       </Box>
                     ))}
@@ -620,6 +735,7 @@ export default function TherapistApply({ therapist }: TherapistApplyProps) {
                       Add Education
                     </button>
                   </Box>
+
                   <Box>
                     <Text
                       as="h3"
@@ -630,9 +746,20 @@ export default function TherapistApply({ therapist }: TherapistApplyProps) {
                       Work Experience
                     </Text>
                     {formData.workExperience.map((exp, index) => (
-                      <Box key={index} className="mb-4 p-4 border rounded">
-                        <Input
-                          placeholder="Company"
+                      <Box
+                        key={index}
+                        className="mb-4"
+                        style={{
+                          display: "flex",
+                          flexDirection: "column",
+                          gap: "0.8rem",
+                        }}
+                      >
+                        <CustomInput
+                          type="text"
+                          id={`workExperience-company-${index}`}
+                          name="company"
+                          label="Company"
                           value={exp.company}
                           onChange={(e) =>
                             handleArrayChange(
@@ -642,10 +769,15 @@ export default function TherapistApply({ therapist }: TherapistApplyProps) {
                               e.target.value
                             )
                           }
-                          className="mb-2 w-full"
+                          placeholder="For e.g. ABC Corp"
+                          aria-required="true"
+                          required
                         />
-                        <Input
-                          placeholder="Position"
+                        <CustomInput
+                          type="text"
+                          id={`workExperience-position-${index}`}
+                          name="position"
+                          label="Position"
                           value={exp.position}
                           onChange={(e) =>
                             handleArrayChange(
@@ -655,38 +787,55 @@ export default function TherapistApply({ therapist }: TherapistApplyProps) {
                               e.target.value
                             )
                           }
-                          className="mb-2 w-full"
+                          placeholder="For e.g. Software Engineer"
+                          aria-required="true"
+                          required
                         />
-                        <Input
-                          type="date"
-                          placeholder="Start Date"
-                          value={exp.startDate}
-                          onChange={(e) =>
-                            handleArrayChange(
-                              "workExperience",
-                              index,
-                              "startDate",
-                              e.target.value
-                            )
-                          }
-                          className="mb-2 w-full"
-                        />
-                        <Input
-                          type="date"
-                          placeholder="End Date"
-                          value={exp.endDate}
-                          onChange={(e) =>
-                            handleArrayChange(
-                              "workExperience",
-                              index,
-                              "endDate",
-                              e.target.value
-                            )
-                          }
-                          className="mb-2 w-full"
-                        />
-                        <Textarea
-                          placeholder="Description"
+                        <Box style={{ display: "flex", gap: "1rem" }}>
+                          <CustomInput
+                            type="date"
+                            id={`workExperience-startDate-${index}`}
+                            name="startDate"
+                            label="Start Date"
+                            value={exp.startDate}
+                            style={{ width: "100%" }}
+                            onChange={(e) =>
+                              handleArrayChange(
+                                "workExperience",
+                                index,
+                                "startDate",
+                                e.target.value
+                              )
+                            }
+                            placeholder="For e.g. YYYY-MM-DD"
+                            aria-required="true"
+                            required
+                          />
+                          <CustomInput
+                            type="date"
+                            id={`workExperience-endDate-${index}`}
+                            name="endDate"
+                            label="End Date"
+                            value={exp.endDate}
+                            style={{ width: "100%" }}
+                            onChange={(e) =>
+                              handleArrayChange(
+                                "workExperience",
+                                index,
+                                "endDate",
+                                e.target.value
+                              )
+                            }
+                            placeholder="For e.g. YYYY-MM-DD"
+                            aria-required="true"
+                            required
+                          />
+                        </Box>
+                        <CustomTextArea
+                          type="text"
+                          id={`workExperience-description-${index}`}
+                          name="description"
+                          label="Description"
                           value={exp.description}
                           onChange={(e) =>
                             handleArrayChange(
@@ -696,16 +845,18 @@ export default function TherapistApply({ therapist }: TherapistApplyProps) {
                               e.target.value
                             )
                           }
-                          className="mb-2 w-full"
+                          placeholder="For e.g. Managed a team of 5"
+                          aria-required="true"
+                          required
                         />
                         <button
                           type="button"
                           onClick={() =>
                             removeArrayItem("workExperience", index)
                           }
-                          className="text-red-500"
+                          className="text-red-500 mt-2"
                         >
-                          Remove
+                          Remove Work Experience
                         </button>
                       </Box>
                     ))}
@@ -733,24 +884,17 @@ export default function TherapistApply({ therapist }: TherapistApplyProps) {
                 </Text>
                 <Stack spacing="1.5rem">
                   <Box>
-                    <Text
-                      as="label"
-                      htmlFor="heardFrom"
-                      marginBottom="0.5rem"
-                      display="block"
-                      className="font-medium"
-                    >
-                      How did you hear about us?
-                    </Text>
-                    <Input
+                    <CustomInput
+                      label="How did you hear about us?"
                       id="heardFrom"
                       name="heardFrom"
                       value={formData.heardFrom}
                       onChange={(e) =>
                         handleChange("heardFrom", e.target.value)
                       }
+                      placeholder="For e.g., Referral, Online Search, Colleague"
+                      aria-required="true"
                       required
-                      className="border rounded-md p-2 w-full focus:ring-2 focus:ring-blue-500"
                     />
                   </Box>
                   <Box>
@@ -777,83 +921,57 @@ export default function TherapistApply({ therapist }: TherapistApplyProps) {
                     </RadioGroup>
                   </Box>
                   <Box>
-                    <Text
-                      as="label"
-                      htmlFor="whyJoining"
-                      marginBottom="0.5rem"
-                      display="block"
-                      className="font-medium"
-                    >
-                      Why are you joining our platform?
-                    </Text>
-                    <Textarea
+                    <CustomTextArea
+                      label="Why are you joining our platform?"
                       id="whyJoining"
                       name="whyJoining"
                       value={formData.whyJoining}
                       onChange={(e) =>
                         handleChange("whyJoining", e.target.value)
                       }
+                      placeholder="For e.g., To expand my practice, To reach more clients, etc."
+                      aria-required="true"
                       required
-                      className="border rounded-md p-2 w-full focus:ring-2 focus:ring-blue-500"
                     />
                   </Box>
                   <Box>
-                    <Text
-                      as="label"
-                      htmlFor="linkedinProfile"
-                      marginBottom="0.5rem"
-                      display="block"
-                      className="font-medium"
-                    >
-                      LinkedIn Profile
-                    </Text>
-                    <Input
+                    <CustomInput
+                      label="LinkedIn Profile"
                       id="linkedinProfile"
                       name="linkedinProfile"
                       value={formData.linkedinProfile}
                       onChange={(e) =>
                         handleChange("linkedinProfile", e.target.value)
                       }
-                      className="border rounded-md p-2 w-full focus:ring-2 focus:ring-blue-500"
+                      placeholder="For e.g., https://www.linkedin.com/in/your-profile"
+                      aria-required="true"
+                      required
                     />
                   </Box>
                   <Box>
-                    <Text
-                      as="label"
-                      htmlFor="referredBy"
-                      marginBottom="0.5rem"
-                      display="block"
-                      className="font-medium"
-                    >
-                      Referred By
-                    </Text>
-                    <Input
+                    <CustomInput
+                      label="Referred By"
                       id="referredBy"
                       name="referredBy"
                       value={formData.referredBy}
                       onChange={(e) =>
                         handleChange("referredBy", e.target.value)
                       }
-                      className="border rounded-md p-2 w-full focus:ring-2 focus:ring-blue-500"
+                      placeholder="For e.g., Dr. Jane Doe, Colleague, Online Forum"
+                      aria-required="true"
+                      required
                     />
                   </Box>
                   <Box>
-                    <Text
-                      as="label"
-                      htmlFor="longBio"
-                      marginBottom="0.5rem"
-                      display="block"
-                      className="font-medium"
-                    >
-                      Long Bio
-                    </Text>
-                    <Textarea
+                    <CustomTextArea
+                      label="Long Bio"
                       id="longBio"
                       name="longBio"
                       value={formData.longBio}
                       onChange={(e) => handleChange("longBio", e.target.value)}
+                      placeholder="For e.g., I am a licensed therapist with 10 years of experience in cognitive behavioral therapy..."
+                      aria-required="true"
                       required
-                      className="border rounded-md p-2 w-full focus:ring-2 focus:ring-blue-500"
                     />
                   </Box>
                 </Stack>
@@ -867,6 +985,7 @@ export default function TherapistApply({ therapist }: TherapistApplyProps) {
                 type="button"
                 onClick={prevStep}
                 className="bg-gray-300 text-black px-6 py-2 rounded-md hover:bg-gray-400 transition-colors"
+                arrowStyle="left"
               >
                 Previous
               </ArrowButton>

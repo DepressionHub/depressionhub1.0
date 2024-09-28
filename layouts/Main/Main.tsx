@@ -4,7 +4,7 @@ import { NavBar } from "../../components/NavBar/NavBar";
 
 export function MainLayout({ children }: { children: React.ReactNode }) {
   return (
-    <Flex direction="column" alignItems="stretch" minHeight="100svh">
+    <Flex direction="column" alignItems="stretch" minHeight="100vh">
       <NavBar />
       <chakra.main
         flexGrow={1}

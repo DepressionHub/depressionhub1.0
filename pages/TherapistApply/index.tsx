@@ -283,7 +283,15 @@ export default function TherapistApply({ therapist }: TherapistApplyProps) {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({
+          ...formData,
+          languages: formData.languages
+            .filter((lang) => lang && lang.value)
+            .map((lang) => lang.value),
+          specializations: formData.specializations
+            .filter((spec) => spec && spec.value)
+            .map((spec) => ({ name: spec.value })),
+        }),
       });
 
       if (response.ok) {
@@ -408,7 +416,7 @@ export default function TherapistApply({ therapist }: TherapistApplyProps) {
                         }
                         placeholder="E.g. : John Doe"
                         aria-required="true"
-                        required
+                        isRequired
                       />
                     </Box>
                   </Box>
@@ -425,7 +433,7 @@ export default function TherapistApply({ therapist }: TherapistApplyProps) {
                         }
                         placeholder="E.g. : 22-12-1987"
                         aria-required="true"
-                        required
+                        isRequired
                       />
                     </Box>
                   </Box>
@@ -463,7 +471,7 @@ export default function TherapistApply({ therapist }: TherapistApplyProps) {
                       }
                       placeholder="E.g. : Pune, Maharashtra"
                       aria-required="true"
-                      required
+                      isRequired
                     />
                   </Box>
                 </Stack>
@@ -495,17 +503,20 @@ export default function TherapistApply({ therapist }: TherapistApplyProps) {
                       id="languages"
                       name="languages"
                       isMulti
-                      options={languageOptions}
+                      options={languageOptions.map((lang) => ({
+                        value: lang.value,
+                        label: lang.label,
+                      }))}
                       placeholder="E.g. English, Hindi"
                       value={formData.languages.map((lang) => ({
-                        value: lang,
-                        label: lang,
+                        value: lang.value,
+                        label: lang.label,
                       }))}
                       onChange={(selectedOptions) => {
                         const selectedLanguages = selectedOptions.map(
                           (option) => option.value
                         );
-                        handleChange("languages", selectedLanguages);
+                        handleChange("languages", selectedLanguages.join(","));
                       }}
                       className="basic-multi-select"
                       classNamePrefix="select"
@@ -525,7 +536,7 @@ export default function TherapistApply({ therapist }: TherapistApplyProps) {
                       }
                       placeholder="E.g. : 7 hours"
                       aria-required="true"
-                      required
+                      isRequired
                     />
                   </Box>
                   <Box>
@@ -541,7 +552,7 @@ export default function TherapistApply({ therapist }: TherapistApplyProps) {
                       }
                       placeholder="E.g. : 2.5 Years"
                       aria-required="true"
-                      required
+                      isRequired
                     />
                   </Box>
                   <Box>
@@ -561,7 +572,12 @@ export default function TherapistApply({ therapist }: TherapistApplyProps) {
                       options={specializationOptions}
                       value={formData.specializations}
                       onChange={(selectedOptions) => {
-                        handleChange("specializations", selectedOptions || []);
+                        handleChange(
+                          "specializations",
+                          selectedOptions
+                            .map((option) => option.value)
+                            .join(",")
+                        );
                       }}
                       placeholder="E.g. Relationship Issues"
                       className="basic-multi-select"
@@ -618,7 +634,7 @@ export default function TherapistApply({ therapist }: TherapistApplyProps) {
                           }
                           placeholder="For e.g. University Name"
                           aria-required="true"
-                          required
+                          isRequired
                         />
                         <Box style={{ display: "flex", gap: "1rem" }}>
                           <CustomInput
@@ -638,7 +654,7 @@ export default function TherapistApply({ therapist }: TherapistApplyProps) {
                             }
                             placeholder="For e.g. Bachelor's"
                             aria-required="true"
-                            required
+                            isRequired
                           />
                           <CustomInput
                             type="text"
@@ -657,7 +673,7 @@ export default function TherapistApply({ therapist }: TherapistApplyProps) {
                             }
                             placeholder="For e.g. Computer Science"
                             aria-required="true"
-                            required
+                            isRequired
                           />
                         </Box>
                         <Box style={{ display: "flex", gap: "1rem" }}>
@@ -678,7 +694,7 @@ export default function TherapistApply({ therapist }: TherapistApplyProps) {
                             }
                             placeholder="For e.g. YYYY-MM-DD"
                             aria-required="true"
-                            required
+                            isRequired
                           />
                           <CustomInput
                             type="date"
@@ -697,7 +713,7 @@ export default function TherapistApply({ therapist }: TherapistApplyProps) {
                             }
                             placeholder="For e.g. YYYY-MM-DD"
                             aria-required="true"
-                            required
+                            isRequired
                           />
                         </Box>
                         <CustomInput
@@ -716,7 +732,7 @@ export default function TherapistApply({ therapist }: TherapistApplyProps) {
                           }
                           placeholder="For e.g. A"
                           aria-required="true"
-                          required
+                          isRequired
                         />
                         <button
                           type="button"
@@ -771,7 +787,7 @@ export default function TherapistApply({ therapist }: TherapistApplyProps) {
                           }
                           placeholder="For e.g. ABC Corp"
                           aria-required="true"
-                          required
+                          isRequired
                         />
                         <CustomInput
                           type="text"
@@ -789,7 +805,7 @@ export default function TherapistApply({ therapist }: TherapistApplyProps) {
                           }
                           placeholder="For e.g. Software Engineer"
                           aria-required="true"
-                          required
+                          isRequired
                         />
                         <Box style={{ display: "flex", gap: "1rem" }}>
                           <CustomInput
@@ -809,7 +825,7 @@ export default function TherapistApply({ therapist }: TherapistApplyProps) {
                             }
                             placeholder="For e.g. YYYY-MM-DD"
                             aria-required="true"
-                            required
+                            isRequired
                           />
                           <CustomInput
                             type="date"
@@ -828,11 +844,10 @@ export default function TherapistApply({ therapist }: TherapistApplyProps) {
                             }
                             placeholder="For e.g. YYYY-MM-DD"
                             aria-required="true"
-                            required
+                            isRequired
                           />
                         </Box>
                         <CustomTextArea
-                          type="text"
                           id={`workExperience-description-${index}`}
                           name="description"
                           label="Description"
@@ -847,7 +862,7 @@ export default function TherapistApply({ therapist }: TherapistApplyProps) {
                           }
                           placeholder="For e.g. Managed a team of 5"
                           aria-required="true"
-                          required
+                          isRequired
                         />
                         <button
                           type="button"
@@ -894,7 +909,7 @@ export default function TherapistApply({ therapist }: TherapistApplyProps) {
                       }
                       placeholder="For e.g., Referral, Online Search, Colleague"
                       aria-required="true"
-                      required
+                      isRequired
                     />
                   </Box>
                   <Box>
@@ -931,7 +946,7 @@ export default function TherapistApply({ therapist }: TherapistApplyProps) {
                       }
                       placeholder="For e.g., To expand my practice, To reach more clients, etc."
                       aria-required="true"
-                      required
+                      isRequired
                     />
                   </Box>
                   <Box>
@@ -945,7 +960,7 @@ export default function TherapistApply({ therapist }: TherapistApplyProps) {
                       }
                       placeholder="For e.g., https://www.linkedin.com/in/your-profile"
                       aria-required="true"
-                      required
+                      isRequired
                     />
                   </Box>
                   <Box>
@@ -959,7 +974,7 @@ export default function TherapistApply({ therapist }: TherapistApplyProps) {
                       }
                       placeholder="For e.g., Dr. Jane Doe, Colleague, Online Forum"
                       aria-required="true"
-                      required
+                      isRequired
                     />
                   </Box>
                   <Box>
@@ -971,7 +986,7 @@ export default function TherapistApply({ therapist }: TherapistApplyProps) {
                       onChange={(e) => handleChange("longBio", e.target.value)}
                       placeholder="For e.g., I am a licensed therapist with 10 years of experience in cognitive behavioral therapy..."
                       aria-required="true"
-                      required
+                      isRequired
                     />
                   </Box>
                 </Stack>

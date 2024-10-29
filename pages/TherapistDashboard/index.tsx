@@ -17,6 +17,7 @@ import {
   CardTitle,
   CardContent,
 } from "../../components/ui/card";
+import PartySocket from "partysocket";
 
 const ResponsiveLine = dynamic(
   () => import("@nivo/line").then((mod) => mod.ResponsiveLine),
@@ -88,18 +89,64 @@ export default function TherapistDashboard({
     status: "ACCEPTED" | "REJECTED"
   ) => {
     try {
-      await axios.put("/api/therapy-session-requests", {
+      // First update the request status in database
+      const response = await axios.put("/api/therapy-session-requests", {
         id: requestId,
         status,
       });
 
-      // Remove the request from the list regardless of the status
-      setPendingRequests((prevRequests) =>
-        prevRequests.filter((req) => req.id !== requestId)
-      );
+      if (response.status === 200) {
+        setPendingRequests((prevRequests) =>
+          prevRequests.filter((req) => req.id !== requestId)
+        );
 
-      if (status === "ACCEPTED") {
-        router.push(`/Talknow/Session?sessionId=${requestId}`);
+        if (status === "ACCEPTED") {
+          // Connect to PartyKit room
+          const socket = new PartySocket({
+            host: process.env.NEXT_PUBLIC_PARTYKIT_HOST || "localhost:1999",
+            room: `therapy-session-${requestId}`,
+          });
+
+          socket.addEventListener("open", () => {
+            // Join session as therapist
+            socket.send(
+              JSON.stringify({
+                type: "join_session",
+                sessionId: requestId,
+                role: "therapist",
+                name: therapist?.fullName || "",
+              })
+            );
+
+            // Send acceptance message
+            socket.send(
+              JSON.stringify({
+                type: "accept_session",
+                sessionId: requestId,
+              })
+            );
+          });
+
+          // Redirect to session page
+          router.push(
+            `/Talknow/Session?sessionId=${requestId}&isTherapist=true`
+          );
+        } else {
+          // If rejected, notify through PartyKit
+          const socket = new PartySocket({
+            host: process.env.NEXT_PUBLIC_PARTYKIT_HOST || "localhost:1999",
+            room: `therapy-session-${requestId}`,
+          });
+
+          socket.addEventListener("open", () => {
+            socket.send(
+              JSON.stringify({
+                type: "reject_session",
+                sessionId: requestId,
+              })
+            );
+          });
+        }
       }
     } catch (error) {
       console.error("Error updating request status:", error);

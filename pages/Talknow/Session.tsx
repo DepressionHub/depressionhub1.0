@@ -1,184 +1,501 @@
 import { useEffect, useState, useRef } from "react";
 import { useRouter } from "next/router";
 import PartySocket from "partysocket";
-import axios from "axios";
-import { getSession } from "next-auth/react"; // Add this import
+import styles from "./Session.module.css";
+import {
+  FaVideo,
+  FaVideoSlash,
+  FaMicrophone,
+  FaMicrophoneSlash,
+} from "react-icons/fa";
 
-// Add this type definition at the top of your file
-type TherapySessionRequest = {
-  id: string;
-  status: "PENDING" | "ACCEPTED" | "REJECTED";
-  // Add other properties as needed
-};
+interface ChatMessage {
+  sender: string;
+  message: string;
+  timestamp: number;
+}
 
-const Session = () => {
+export default function TherapySession() {
   const router = useRouter();
-  const { therapistId, sessionId } = router.query;
-  const [messages, setMessages] = useState<string[]>([]);
-  const [input, setInput] = useState("");
-  const [stream, setStream] = useState<MediaStream | null>(null);
-  const [sessionStarted, setSessionStarted] = useState(false);
+  const { sessionId, isTherapist } = router.query;
+  const [status, setStatus] = useState("Waiting for session to start...");
+  const [localStream, setLocalStream] = useState<MediaStream | null>(null);
+  const [remoteStream, setRemoteStream] = useState<MediaStream | null>(null);
+  const [sessionStatus, setSessionStatus] = useState("waiting");
+  const [isCameraOn, setIsCameraOn] = useState(true);
+  const [isMicOn, setIsMicOn] = useState(true);
+  const [userName, setUserName] = useState("User");
+  const [therapistName, setTherapistName] = useState("Therapist");
+  const peerConnection = useRef<RTCPeerConnection | null>(null);
+  const partySocket = useRef<PartySocket | null>(null);
+
   const localVideoRef = useRef<HTMLVideoElement>(null);
   const remoteVideoRef = useRef<HTMLVideoElement>(null);
-  const peerConnectionRef = useRef<RTCPeerConnection | null>(null);
-  const socket = useRef<PartySocket | null>(null);
-  const [sessionRequest, setSessionRequest] =
-    useState<TherapySessionRequest | null>(null);
+
+  const [chatMessages, setChatMessages] = useState<ChatMessage[]>([]);
+  const [chatInput, setChatInput] = useState("");
+  const chatMessagesRef = useRef<HTMLDivElement>(null);
+
+  const isTherapistRef = useRef(isTherapist === "true");
 
   useEffect(() => {
-    if (therapistId && sessionId) {
-      checkSessionStatus();
-    }
-  }, [therapistId, sessionId]);
-
-  const checkSessionStatus = async () => {
-    try {
-      const session = await getSession();
-      const response = await axios.get<TherapySessionRequest>(
-        `/api/therapy-session-requests/${sessionId}`,
-        {
-          headers: {
-            Authorization: `Bearer ${session?.accessToken}`,
-          },
-        }
+    if (typeof window !== "undefined" && sessionId) {
+      console.log(
+        `Initializing session. IsTherapist: ${isTherapist}, SessionId: ${sessionId}`
       );
-      if (response.data.status === "ACCEPTED") {
-        startSession();
-      } else if (response.data.status === "REJECTED") {
-        alert("The therapist has rejected the session request.");
-        router.push("/Talknow");
-      } else {
-        // If still pending, check again after a delay
-        setTimeout(checkSessionStatus, 5000);
-      }
-    } catch (error) {
-      console.error("Error checking session status:", error);
+      const connectSocket = () => {
+        partySocket.current = new PartySocket({
+          host: process.env.NEXT_PUBLIC_PARTYKIT_HOST || "localhost:1999",
+          room: `therapy-session-${sessionId}`,
+        });
+
+        partySocket.current.addEventListener("open", () => {
+          console.log("PartySocket connection opened");
+          const joinMessage = {
+            type: "join_session",
+            sessionId,
+            role: isTherapist === "true" ? "therapist" : "user",
+            name: isTherapist === "true" ? therapistName : userName,
+          };
+          console.log("Sending join message:", joinMessage);
+          partySocket.current?.send(JSON.stringify(joinMessage));
+        });
+
+        partySocket.current.addEventListener("message", handleMessage);
+        partySocket.current.addEventListener("close", () => {
+          console.log(
+            "PartySocket connection closed. Attempting to reconnect..."
+          );
+          setTimeout(connectSocket, 3000);
+        });
+      };
+
+      connectSocket();
+
+      return () => {
+        console.log("Cleaning up TherapySession component");
+        if (partySocket.current) {
+          partySocket.current.removeEventListener("message", handleMessage);
+          partySocket.current.close();
+        }
+        endVideoCall();
+      };
+    }
+  }, [sessionId, isTherapist, therapistName, userName]);
+
+  const handleMessage = async (event: MessageEvent) => {
+    const data = JSON.parse(event.data);
+    console.log("Received message:", data);
+    switch (data.type) {
+      case "participant_joined":
+        console.log(`Participant joined: ${data.role} - ${data.name}`);
+        if (data.role === "user") {
+          setUserName(data.name);
+          if (isTherapist === "true") {
+            setStatus(
+              `User ${data.name} has joined. Waiting to start session...`
+            );
+          }
+        }
+        if (data.role === "therapist") {
+          setTherapistName(data.name);
+          if (isTherapist === "false") {
+            setStatus(
+              `Therapist ${data.name} has joined. Waiting to start session...`
+            );
+          }
+        }
+        break;
+      case "current_participants":
+        console.log("Current participants:", data.participants);
+        updateParticipants(data.participants);
+        break;
+      case "session_started":
+        console.log("Session started, initializing video call");
+        setSessionStatus("started");
+        setStatus("Session has started. Initializing video call...");
+        initializeVideoCall();
+        break;
+      case "ready_for_call":
+        if (isTherapist === "true" && peerConnection.current) {
+          console.log("Creating offer as therapist");
+          await createOffer();
+        }
+        break;
+      case "video_offer":
+        console.log("Received video offer");
+        await handleVideoOffer(data.offer);
+        break;
+      case "video_answer":
+        console.log("Received video answer");
+        await handleVideoAnswer(data.answer);
+        break;
+      case "new_ice_candidate":
+        console.log("Received new ICE candidate");
+        await handleNewICECandidate(data.candidate);
+        break;
+      case "chat":
+        handleChatMessage(data);
+        break;
+      case "connected":
+        console.log("Connected to therapy session room");
+        break;
+      case "session_ended":
+        handleSessionEnded();
+        break;
+      case "session_accepted":
+        console.log("Session accepted by therapist");
+        setStatus("Session accepted! Initializing video call...");
+        setSessionStatus("started");
+        initializeVideoCall();
+        break;
+      case "session_rejected":
+        console.log("Session rejected by therapist");
+        setStatus("Session request was rejected by the therapist.");
+        setTimeout(() => {
+          router.push("/Talknow");
+        }, 3000);
+        break;
+      default:
+        console.log("Unknown message type:", data.type);
     }
   };
 
-  const startSession = async () => {
-    try {
-      await setupMediaStream();
-      await setupWebRTC();
-      setSessionStarted(true);
-    } catch (error) {
-      console.error("Error starting session:", error);
+  const updateParticipants = (participants: any[]) => {
+    console.log("Updating participants:", participants);
+    const isUserPresent = participants.some((p) => p.role === "user");
+    const isTherapistPresent = participants.some((p) => p.role === "therapist");
+
+    if (isUserPresent && isTherapistPresent) {
+      console.log("Both participants present, waiting for session to start");
+      setStatus(
+        "Both participants have joined. Waiting for session to start..."
+      );
+      // Trigger session start
+      sendMessage({
+        type: "start_session",
+        sessionId: sessionId as string,
+      });
+    } else if (isUserPresent && isTherapist === "true") {
+      setStatus("User has joined. Waiting to start session...");
+    } else if (isTherapistPresent && isTherapist === "false") {
+      setStatus("Therapist has joined. Waiting to start session...");
     }
   };
 
-  const setupMediaStream = async () => {
+  const initializeLocalStream = async () => {
     try {
-      const mediaStream = await navigator.mediaDevices.getUserMedia({
+      console.log("Initializing local stream");
+      const stream = await navigator.mediaDevices.getUserMedia({
         video: true,
         audio: true,
       });
-      setStream(mediaStream);
+      console.log("Local stream obtained:", stream);
+      setLocalStream(stream);
       if (localVideoRef.current) {
-        localVideoRef.current.srcObject = mediaStream;
+        localVideoRef.current.srcObject = stream;
+        console.log("Local video element updated");
+      } else {
+        console.error("Local video ref is null");
       }
     } catch (error) {
       console.error("Error accessing media devices:", error);
     }
   };
 
-  const setupWebRTC = () => {
-    peerConnectionRef.current = new RTCPeerConnection();
+  const initializeVideoCall = async () => {
+    console.log("Initializing video call");
+    try {
+      await initializeLocalStream();
 
-    if (stream) {
-      stream.getTracks().forEach((track) => {
-        peerConnectionRef.current?.addTrack(track, stream);
+      peerConnection.current = new RTCPeerConnection({
+        iceServers: [{ urls: "stun:stun.l.google.com:19302" }],
+      });
+
+      peerConnection.current.onicecandidate = handleICECandidate;
+      peerConnection.current.ontrack = handleTrack;
+      peerConnection.current.oniceconnectionstatechange = () => {
+        console.log(
+          "ICE connection state:",
+          peerConnection.current?.iceConnectionState
+        );
+      };
+
+      if (localStream) {
+        localStream.getTracks().forEach((track) => {
+          peerConnection.current?.addTrack(track, localStream);
+        });
+      }
+
+      if (isTherapist === "true") {
+        console.log("Creating offer as therapist");
+        await createOffer();
+      } else {
+        console.log("Sending ready_for_call as user");
+        sendMessage({
+          type: "ready_for_call",
+          sessionId: sessionId as string,
+          isTherapist: false,
+        });
+      }
+    } catch (error) {
+      console.error("Error initializing video call:", error);
+    }
+  };
+
+  const handleICECandidate = (event: RTCPeerConnectionIceEvent) => {
+    if (event.candidate) {
+      console.log("New ICE candidate:", event.candidate);
+      sendMessage({
+        type: "new_ice_candidate",
+        candidate: event.candidate,
+        sessionId: sessionId as string,
       });
     }
+  };
 
-    peerConnectionRef.current.ontrack = (event) => {
-      if (remoteVideoRef.current)
-        remoteVideoRef.current.srcObject = event.streams[0];
-    };
+  const handleTrack = (event: RTCTrackEvent) => {
+    console.log("Received remote track", event.streams[0]);
+    setRemoteStream(event.streams[0]);
+    if (remoteVideoRef.current) {
+      remoteVideoRef.current.srcObject = event.streams[0];
+      console.log("Remote video source set");
+    } else {
+      console.error("Remote video ref is null");
+    }
+  };
 
-    peerConnectionRef.current.onicecandidate = (event) => {
-      if (event.candidate) {
-        socket.current?.send(
-          JSON.stringify({ type: "ice-candidate", candidate: event.candidate })
-        );
+  const createOffer = async () => {
+    if (peerConnection.current) {
+      try {
+        const offer = await peerConnection.current.createOffer();
+        await peerConnection.current.setLocalDescription(offer);
+        sendMessage({
+          type: "video_offer",
+          offer: offer,
+          sessionId: sessionId as string,
+        });
+      } catch (error) {
+        console.error("Error creating offer:", error);
       }
+    }
+  };
+
+  const handleVideoOffer = async (offer: RTCSessionDescriptionInit) => {
+    if (peerConnection.current) {
+      try {
+        await peerConnection.current.setRemoteDescription(
+          new RTCSessionDescription(offer)
+        );
+        const answer = await peerConnection.current.createAnswer();
+        await peerConnection.current.setLocalDescription(answer);
+        sendMessage({
+          type: "video_answer",
+          answer: answer,
+          sessionId: sessionId as string,
+        });
+      } catch (error) {
+        console.error("Error handling video offer:", error);
+      }
+    }
+  };
+
+  const handleVideoAnswer = async (answer: RTCSessionDescriptionInit) => {
+    if (peerConnection.current) {
+      try {
+        await peerConnection.current.setRemoteDescription(
+          new RTCSessionDescription(answer)
+        );
+      } catch (error) {
+        console.error("Error handling video answer:", error);
+      }
+    }
+  };
+
+  const handleNewICECandidate = async (candidate: RTCIceCandidateInit) => {
+    if (peerConnection.current && peerConnection.current.remoteDescription) {
+      try {
+        await peerConnection.current.addIceCandidate(
+          new RTCIceCandidate(candidate)
+        );
+      } catch (error) {
+        console.error("Error adding received ice candidate:", error);
+      }
+    } else {
+      console.log(
+        "Received ICE candidate before remote description, storing for later"
+      );
+      // Store the candidate to add later when the remote description is set
+    }
+  };
+
+  const sendMessage = (message: any) => {
+    if (partySocket.current) {
+      partySocket.current.send(JSON.stringify(message));
+    }
+  };
+
+  const endVideoCall = () => {
+    if (peerConnection.current) {
+      peerConnection.current.close();
+      peerConnection.current = null;
+    }
+    if (localStream) {
+      localStream.getTracks().forEach((track) => track.stop());
+      setLocalStream(null);
+    }
+    if (localVideoRef.current) localVideoRef.current.srcObject = null;
+    if (remoteVideoRef.current) remoteVideoRef.current.srcObject = null;
+    setRemoteStream(null);
+  };
+
+  const handleEndCall = () => {
+    endVideoCall();
+    partySocket.current?.send(
+      JSON.stringify({
+        type: "end_session",
+        sessionId: sessionId,
+      })
+    );
+    router.push("/Talknow");
+  };
+
+  const handleSessionEnded = () => {
+    endVideoCall();
+    setStatus("Session ended by the other participant.");
+    setTimeout(() => {
+      router.push("/Talknow");
+    }, 3000); // Redirect after 3 seconds
+  };
+
+  const handleChatMessage = (data: { sender: string; message: string }) => {
+    const newMessage: ChatMessage = {
+      sender: data.sender,
+      message: data.message,
+      timestamp: Date.now(),
     };
+    setChatMessages((prevMessages) => [...prevMessages, newMessage]);
   };
 
-  const handleMessage = (event: MessageEvent) => {
-    const data = JSON.parse(event.data);
-    switch (data.type) {
-      case "offer":
-        handleOffer(data.offer);
-        break;
-      case "answer":
-        handleAnswer(data.answer);
-        break;
-      case "ice-candidate":
-        handleIceCandidate(data.candidate);
-        break;
-      case "chat":
-        setMessages((prev) => [...prev, `${data.sender}: ${data.message}`]);
-        break;
+  const sendChatMessage = () => {
+    if (chatInput.trim() && partySocket.current) {
+      partySocket.current.send(
+        JSON.stringify({
+          type: "chat",
+          message: chatInput.trim(),
+          sender: isTherapist === "true" ? therapistName : userName,
+        })
+      );
+      setChatInput("");
     }
   };
 
-  const handleOffer = async (offer: RTCSessionDescriptionInit) => {
-    await peerConnectionRef.current?.setRemoteDescription(
-      new RTCSessionDescription(offer)
-    );
-    const answer = await peerConnectionRef.current?.createAnswer();
-    await peerConnectionRef.current?.setLocalDescription(answer);
-    socket.current?.send(JSON.stringify({ type: "answer", answer }));
-  };
-
-  const handleAnswer = (answer: RTCSessionDescriptionInit) => {
-    peerConnectionRef.current?.setRemoteDescription(
-      new RTCSessionDescription(answer)
-    );
-  };
-
-  const handleIceCandidate = (candidate: RTCIceCandidateInit) => {
-    peerConnectionRef.current?.addIceCandidate(new RTCIceCandidate(candidate));
-  };
-
-  const startCall = async () => {
-    const offer = await peerConnectionRef.current?.createOffer();
-    await peerConnectionRef.current?.setLocalDescription(offer);
-    socket.current?.send(JSON.stringify({ type: "offer", offer }));
-  };
-
-  const sendMessage = () => {
-    if (input.trim()) {
-      socket.current?.send(JSON.stringify({ type: "chat", message: input }));
-      setMessages((prev) => [...prev, `You: ${input}`]);
-      setInput("");
+  useEffect(() => {
+    if (chatMessagesRef.current) {
+      chatMessagesRef.current.scrollTop = chatMessagesRef.current.scrollHeight;
     }
+  }, [chatMessages]);
+
+  const toggleCamera = () => {
+    if (localStream) {
+      localStream.getVideoTracks().forEach((track) => {
+        track.enabled = !isCameraOn;
+      });
+      setIsCameraOn(!isCameraOn);
+    }
+  };
+
+  const toggleMic = () => {
+    if (localStream) {
+      localStream.getAudioTracks().forEach((track) => {
+        track.enabled = !isMicOn;
+      });
+      setIsMicOn(!isMicOn);
+    }
+  };
+
+  const startSession = () => {
+    console.log("Starting session");
+    sendMessage({
+      type: "start_session",
+      sessionId: sessionId as string,
+    });
   };
 
   return (
-    <div>
-      <h1>Therapy Session</h1>
-      {!sessionStarted && <p>Waiting for therapist to accept the session...</p>}
-      {sessionStarted && (
-        <>
-          <video ref={localVideoRef} autoPlay muted playsInline />
-          <video ref={remoteVideoRef} autoPlay playsInline />
-          <div>
-            {messages.map((msg, index) => (
-              <div key={index}>{msg}</div>
+    <div className={styles.container}>
+      <header className={styles.header}>
+        <h1>Therapy Session</h1>
+        <p>{status}</p>
+      </header>
+
+      <main className={styles.main}>
+        <div className={styles.videoContainer}>
+          <div className={styles.localVideo}>
+            <video
+              ref={localVideoRef}
+              autoPlay
+              playsInline
+              muted
+              className={styles.video}
+            />
+          </div>
+          <div className={styles.remoteVideo}>
+            {remoteStream ? (
+              <video
+                ref={remoteVideoRef}
+                autoPlay
+                playsInline
+                className={styles.video}
+              />
+            ) : (
+              <div className={styles.waitingMessage}>
+                {sessionStatus === "started"
+                  ? "Connecting..."
+                  : "Waiting for the other participant..."}
+              </div>
+            )}
+          </div>
+        </div>
+
+        <div className={styles.chatContainer}>
+          <div className={styles.chatMessages} ref={chatMessagesRef}>
+            {chatMessages.map((msg, index) => (
+              <div
+                key={index}
+                className={`${styles.chatMessage} ${
+                  msg.sender ===
+                  (isTherapist === "true" ? therapistName : userName)
+                    ? styles.chatMessageSelf
+                    : styles.chatMessageOther
+                }`}
+              >
+                <strong>{msg.sender}: </strong>
+                {msg.message}
+              </div>
             ))}
           </div>
-          <input
-            type="text"
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-          />
-          <button onClick={sendMessage}>Send</button>
-          <button onClick={startCall}>Start Call</button>
-        </>
-      )}
+          <div className={styles.chatInput}>
+            <input
+              type="text"
+              value={chatInput}
+              onChange={(e) => setChatInput(e.target.value)}
+              onKeyPress={(e) => e.key === "Enter" && sendChatMessage()}
+              placeholder="Type a message..."
+              className={styles.chatInputField}
+            />
+            <button onClick={sendChatMessage} className={styles.chatSendButton}>
+              Send
+            </button>
+          </div>
+        </div>
+      </main>
+
+      <footer className={styles.footer}>
+        <button className={styles.endCallButton} onClick={handleEndCall}>
+          End Call
+        </button>
+      </footer>
     </div>
   );
-};
-
-export default Session;
+}

@@ -1,18 +1,22 @@
 version: '3'
 services:
   db:
-    image: postgres
+    image: postgres:16
     restart: always
-    volumes:
-      - ./data/db:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: depressionDB
+      POSTGRES_USER: depressionhub
+      POSTGRES_PASSWORD: depressionhub123
     ports:
       - 5432:5432 
-    environment:
-      - POSTGRES_DB=depressionDB
-      - POSTGRES_USER=depressionhub
-      - POSTGRES_PASSWORD=depressionhub123
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
   adminer:
     image: adminer
     restart: always
     ports:
       - 8080:8080
+
+volumes:
+  postgres_data:

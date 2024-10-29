@@ -6,6 +6,8 @@ import { MdVerified } from "react-icons/md";
 import { useRouter } from "next/router";
 import axios from "axios";
 import { getSession } from "next-auth/react";
+import PartySocket from "partytown/socket";
+
 type AxiosError = any;
 
 interface Therapist {
@@ -85,18 +87,16 @@ const ChatNow = () => {
     );
   }
 
-
   console.log(therapists);
 
   const handleStartSession = async (therapistId: string) => {
     try {
       const session = await getSession();
-
       if (!session) {
         throw new Error("No session available");
       }
 
-      // Create a new request
+      // Create session request in database
       const response = await axios.post<{ id: string }>(
         "/api/therapy-session-requests",
         { therapistId },
@@ -106,13 +106,29 @@ const ChatNow = () => {
           },
         }
       );
-      console.log("Created new request:", response.data);
 
       const requestId = response.data.id;
 
-      router.push(
-        `/Talknow/Session?therapistId=${therapistId}&sessionId=${requestId}`
-      );
+      // Connect to PartyKit room
+      const socket = new PartySocket({
+        host: process.env.NEXT_PUBLIC_PARTYKIT_HOST || "localhost:1999",
+        room: `therapy-session-${requestId}`,
+      });
+
+      socket.addEventListener("open", () => {
+        // Join session as user
+        socket.send(
+          JSON.stringify({
+            type: "join_session",
+            sessionId: requestId,
+            role: "user",
+            name: session.user?.name || "User",
+          })
+        );
+      });
+
+      // Redirect to waiting room
+      router.push(`/Talknow/Session?sessionId=${requestId}&isTherapist=false`);
     } catch (error) {
       console.error("Error starting session:", error);
       alert("Failed to create session request. Please try again.");
@@ -192,10 +208,10 @@ const ChatNow = () => {
                     width={100}
                     height={100}
                     className="rounded-full mb-4"
-
                     style={{
                       border: "1px solid #000",
                       boxShadow: "2px 3px 0px black",
+                    }}
                     onError={(e) => {
                       e.currentTarget.src = "/path/to/fallback/image.jpg";
                     }}

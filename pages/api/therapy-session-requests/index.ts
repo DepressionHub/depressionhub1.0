@@ -61,11 +61,13 @@ export default async function handler(
       res.status(500).json({ error: "Failed to create request" });
     }
   } else if (req.method === "PUT") {
-    const { id, status } = req.body;
-
-    if (!id || !status) {
-      return res.status(400).json({ error: "Missing id or status" });
+    const token = await getToken({ req });
+    if (!token) {
+      return res.status(401).json({ error: "Unauthorized" });
     }
+
+    const { id, status } = req.body;
+    console.log("Updating session request:", { id, status });
 
     try {
       const updatedRequest = await prisma.therapySessionRequest.update({
@@ -73,6 +75,7 @@ export default async function handler(
         data: { status },
       });
 
+      console.log("Updated request:", updatedRequest);
       return res.status(200).json(updatedRequest);
     } catch (error) {
       console.error("Error updating session request:", error);

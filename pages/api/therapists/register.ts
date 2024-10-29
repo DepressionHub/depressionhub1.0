@@ -48,7 +48,15 @@ export default async function handler(
       dateOfBirth: new Date(dateOfBirth),
       gender,
       currentLocation,
-      languages: languages.split(",").map((lang: string) => lang.trim()),
+      languages: Array.isArray(languages)
+        ? languages
+            .filter(
+              (lang) => lang && typeof lang === "object" && "value" in lang
+            )
+            .map((lang) => lang.value)
+        : typeof languages === "string"
+        ? languages.split(",").map((lang) => lang.trim())
+        : [],
       hoursAvailable: Number(hoursAvailable),
       experienceYears: Number(experienceYears),
       heardFrom,
@@ -59,7 +67,7 @@ export default async function handler(
       longBio,
       specializations: {
         create: specializationArray.map((spec: any) => ({
-          name: spec.name,
+          name: spec.name || spec.value,
         })),
       },
       certifications: {

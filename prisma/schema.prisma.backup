@@ -1,0 +1,162 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// User Authentication (leveraging NextAuth)
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  emailVerified DateTime?
+  name          String?
+  image         String?
+  accounts      Account[]
+  sessions      Session[]
+  therapist     Therapist?
+  sessionRequests TherapySessionRequest[] 
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+// Therapist Profile
+model Therapist {
+  id                String   @id @default(cuid())
+  userId            String   @unique
+  user              User     @relation(fields: [userId], references: [id])
+  type              TherapistType
+  fullName          String
+  dateOfBirth       DateTime
+  gender            String
+  currentLocation   String
+  languages         String[]
+  hoursAvailable    Int
+  experienceYears   Float
+  heardFrom         String
+  workingElsewhere  Boolean
+  whyJoining        String   @db.Text
+  linkedinProfile   String?
+  referredBy        String?
+  longBio           String   @db.Text
+  isVerified        Boolean  @default(false)
+  specializations   Specialization[]
+  certifications    Certification[]
+  education         Education[]
+  workExperience    WorkExperience[]
+  sessionRequests   TherapySessionRequest[]
+}
+
+model TherapySessionRequest {
+  id          String   @id @default(uuid())
+  therapistId String
+  therapist   Therapist @relation(fields: [therapistId], references: [id])
+  status      String
+  requestedAt DateTime @default(now())
+  // Add other necessary fields
+  payment     Payment?
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+}
+
+enum SessionRequestStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
+  RESCHEDULED
+}
+
+enum TherapistType {
+  PROFESSIONAL
+  STUDENT
+}
+
+model Payment {
+  id               String   @id @default(cuid())
+  sessionRequestId String   @unique
+  sessionRequest   TherapySessionRequest @relation(fields: [sessionRequestId], references: [id])
+  amount           Float
+  status           PaymentStatus
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+}
+
+enum PaymentStatus {
+  PENDING
+  COMPLETED
+  FAILED
+}
+
+model Specialization {
+  id          String    @id @default(cuid())
+  name        String    @unique
+  therapists  Therapist[]
+}
+
+model Certification {
+  id          String   @id @default(cuid())
+  name        String
+  issuedAt    DateTime
+  expiresAt   DateTime?
+  issuedBy    String
+  therapistId String
+  therapist   Therapist @relation(fields: [therapistId], references: [id])
+}
+
+model Education {
+  id          String   @id @default(cuid())
+  institution String
+  degree      String
+  fieldOfStudy String
+  startDate   DateTime
+  endDate     DateTime?
+  grade       Float?
+  therapistId String
+  therapist   Therapist @relation(fields: [therapistId], references: [id])
+}
+
+model WorkExperience {
+  id          String   @id @default(cuid())
+  company     String
+  position    String
+  startDate   DateTime
+  endDate     DateTime?
+  description String?
+  therapistId String
+  therapist   Therapist @relation(fields: [therapistId], references: [id])
+}
